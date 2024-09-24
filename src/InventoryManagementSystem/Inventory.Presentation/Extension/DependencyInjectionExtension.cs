@@ -1,4 +1,6 @@
 ﻿using Inventory.DataAccess.UnitOfWork;
+using Inventory.Service.Features.Services;
+using Inventory.Service.Features.Services.IServices;
 
 namespace Inventory.Presentation.Extension
 {
@@ -7,6 +9,7 @@ namespace Inventory.Presentation.Extension
         public static IServiceCollection RegisterWebServices(this IServiceCollection services)
         {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICategoryManagementService, CategoryManagementService>();
 
             return services;
         }

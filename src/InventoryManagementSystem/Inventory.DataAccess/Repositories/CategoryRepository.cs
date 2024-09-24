@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace Inventory.DataAccess.Repositories
 {
-    public class ProductRepository : Repository<Product>, IProductRepository
+    public class CategoryRepository : Repository<Category>, ICategoryRepository
     {
         private readonly ApplicationDbContext _context;
-        public ProductRepository(ApplicationDbContext context) : base(context)
+        public CategoryRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
         }
 
-        public async Task UpdateAsync(Product entity)
+        public async Task UpdateAsync(Category entity)
         {
-            _context.Products.Update(entity);
+            _context.Categories.Update(entity);
             await SaveAsync();
         }
 

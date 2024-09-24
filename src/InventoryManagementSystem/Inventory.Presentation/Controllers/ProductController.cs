@@ -18,7 +18,7 @@ namespace Inventory.Presentation.Controllers
 
         public async Task<IActionResult> GetProduct()
         {
-             var products = await _unitOfWork.Products.GetAllAsync();
+             var products = await _unitOfWork.Product.GetAllAsync();
             return View(products);
         }
     }

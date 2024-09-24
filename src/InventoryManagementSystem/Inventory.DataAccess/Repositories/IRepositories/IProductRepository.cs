@@ -9,6 +9,6 @@ namespace Inventory.DataAccess.Repositories.IRepositories
 {
     public interface IProductRepository  : IRepository<Product>
     {
-        void UpdateAsync(Product entity);
+        Task UpdateAsync(Product entity);
     }
 }

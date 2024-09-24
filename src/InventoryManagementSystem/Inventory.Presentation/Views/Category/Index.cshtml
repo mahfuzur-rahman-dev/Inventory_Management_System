@@ -1,0 +1,41 @@
+﻿@model List<Category>;
+
+<br />
+
+<div class="container p-4 border">
+    <div class="row pb-2">
+        <div class="col">
+            <h1 class="text-primary">Category list</h1>
+        </div>
+
+        <div class="col text-end pt-1">
+            <a asp-controller="Category" asp-action="Create" class="btn btn-outline-primary"><i class="bi bi-plus-circle"></i> Create a category</a>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @{
+                foreach (var data in Model)
+                {
+                    <tr>
+                        <td>@data.Name</td>
+                        <td>@data.Description</td>
+                        <td>
+                            <a asp-controller="Category" asp-action="Update" asp-route-id="@data.Id" class="btn btn-info w-25"><i class="bi bi-pencil-square"></i></a>
+                            <a asp-controller="Category" asp-action="Delete" asp-route-id="@data.Id" class="btn btn-danger w-25"><i class="bi bi-trash"></i> </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

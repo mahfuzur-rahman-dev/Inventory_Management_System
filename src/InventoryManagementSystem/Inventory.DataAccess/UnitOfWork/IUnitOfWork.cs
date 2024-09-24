@@ -9,6 +9,7 @@ namespace Inventory.DataAccess.UnitOfWork
 {
     public interface IUnitOfWork
     {
-        IProductRepository Products { get; }
+        IProductRepository Product { get; }
+        ICategoryRepository Category { get; }
     }
 }

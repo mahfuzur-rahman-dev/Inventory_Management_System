@@ -1,0 +1,41 @@
+﻿@model CreateCategoryModel;
+@{
+    ViewData["Title"] = "Create";
+}
+
+<form asp-action="Create" asp-controller="Category" method="post" asp-antiforgery="true">
+    <br />
+
+    <div class="container p-3">
+        <h1>Create a category</h1>
+        <hr />
+    </div>
+
+    <div class="row p-4 border border-2 border-dark">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" placeholder="Enter category name"  class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="form-group mt-2">
+            <label asp-for="Description" class="control-label"></label>
+            <textarea asp-for="Description" rows="4" placeholder=" Enter category description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="form-group d-flex justify-content-left mt-3">
+            <button type="submit" class="btn btn-primary w-25">Create</button>
+            <a asp-action="Index" asp-controller="Category" class="mx-2">Back to list</a>
+
+        </div>
+
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

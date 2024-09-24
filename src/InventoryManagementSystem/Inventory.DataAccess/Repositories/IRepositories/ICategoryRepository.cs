@@ -9,6 +9,6 @@ namespace Inventory.DataAccess.Repositories.IRepositories
 {
     public interface ICategoryRepository  : IRepository<Category>
     {
-        Task<Category> UpdateAsync(Product entity);
+        Task UpdateAsync(Category entity);
     }
 }

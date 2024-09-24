@@ -1,7 +1,12 @@
+using Inventory.Presentation.Extension;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDatabaseConfig(builder.Configuration);
+builder.Services.AddIdentityConfiguration(builder.Configuration);
+
 
 var app = builder.Build();
 

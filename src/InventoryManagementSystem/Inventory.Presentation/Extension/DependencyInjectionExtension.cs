@@ -11,6 +11,7 @@ namespace Inventory.Presentation.Extension
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ICategoryManagementService, CategoryManagementService>();
             services.AddScoped<IProductManagementService, ProductManagementService>();
+            services.AddScoped<ICartManagementService, CartManagementService>();
 
             return services;
         }

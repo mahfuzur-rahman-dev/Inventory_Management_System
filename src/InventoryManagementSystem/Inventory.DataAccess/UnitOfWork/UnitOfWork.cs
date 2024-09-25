@@ -14,12 +14,14 @@ namespace Inventory.DataAccess.UnitOfWork
         private readonly ApplicationDbContext _context;
         public IProductRepository Product {  get; set; }
         public ICategoryRepository Category {  get; set; }
+        public ICartRepository Cart {  get; set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             Product = new ProductRepository(_context);
             Category = new CategoryRepository(_context);
+            Cart = new CartRepository(_context);
         }
 
 

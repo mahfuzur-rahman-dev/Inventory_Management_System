@@ -1,11 +1,22 @@
 ﻿@model Product
+@using System.Security.Claims;
+@{
+    string userId = string.Empty;
+
+    // Check if the user is authenticated
+    if (User.Identity.IsAuthenticated)
+    {
+        // Get the userId from the claims
+        userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    }
+}
+
 
 <div class="card container">
     <div class="card-header row">
         <div class="col-6">
             <h1>Product Detail</h1>
         </div>
-
     </div>
 
     <div class="card-body row">
@@ -19,18 +30,21 @@
                     ? Model.Description.Substring(0, 200) + "..."
                     : Model.Description)
             </p>
-
         </div>
 
         <!-- Right part: Product Image -->
         <div class="col-12 col-lg-4 text-center">
             <img class="img-fluid rounded" src="~/images/product1.jpeg" alt="@Model.Name" style="height: 200px; width: 70%; object-fit: cover;" />
         </div>
-        <div class="row pl-2">
-            <h4 class="form-label">Order quantity</h4>
+
+        <!-- Order Quantity -->
+        <div class="row pl-2 mt-4">
             <div class="col-1 text-primary"><h4>Count</h4></div>
             <div class="col-11"><input id="orderCount" class="form-control" /></div>
         </div>
+
+        <!-- Hidden field to store userId -->
+        <input type="hidden" id="userId" value="@userId" />
 
     </div>
 
@@ -39,46 +53,45 @@
             <a asp-controller="Product" asp-action="AllProducts" class="btn btn-success form-control py-2">Back to List</a>
         </div>
         <div class="col-12 col-md-6">
-            <button onclick=" return placeOrder('@Model.Id')" type="button" class="btn btn-primary form-control py-2">Place order</button>
+            <button onclick="return placeOrder('@Model.Id')" type="button" class="btn btn-primary form-control py-2">Place order</button>
         </div>
     </div>
 </div>
 
-
 <script type="text/javascript">
-
-    function placeOrder(id) {
-
+    function placeOrder(productId) {
         let count = $('#orderCount').val();
-        let productId = id; // Assuming you have the Product ID available in the model
+        let userId = $('#userId').val(); // Get the userId from the hidden field
 
-        if (count == null || count == 0) {
+        if (!count || count <= 0) {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "Order amount cannont be empmty",
+                text: "Order amount cannot be empty",
             });
             return false;
         }
 
         $.ajax({
-            url: '@Url.Action("Index", "Product")', // Action to handle the order
+            url: '@Url.Action("AddToCart", "Cart")', // Action to handle the order
             type: 'POST',
             data: {
                 count: count,
-                productId: productId
+                productId: productId,
             },
             success: function (response) {
                 if (response.success) {
-                    alert('Order placed successfully!');
+                    Swal.fire('Order placed successfully!', '', 'success').then(() => {
+                        window.location.href = '@Url.Action("ViewCart", "Cart")';
+                    });
                 } else {
-                    alert('Failed to place the order.');
+                    Swal.fire('Failed to place the order.', response.message || '', 'error');
                 }
             },
             error: function () {
-                alert('Error occurred while placing the order.');
+                Swal.fire('Error occurred while placing the order.', '', 'error');
             }
         });
+
     }
-          
 </script>

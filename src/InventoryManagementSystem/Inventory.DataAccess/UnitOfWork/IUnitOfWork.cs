@@ -11,5 +11,6 @@ namespace Inventory.DataAccess.UnitOfWork
     {
         IProductRepository Product { get; }
         ICategoryRepository Category { get; }
+        ICartRepository Cart { get; }
     }
 }

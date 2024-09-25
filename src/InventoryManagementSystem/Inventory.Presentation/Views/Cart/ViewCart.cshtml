@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Cart>
+
+<div class="container">
+    <h2>Your Cart</h2>
+
+    @if (Model.Any())
+    {
+        <!-- Declare variables to hold total quantity and total amount -->
+        int totalQuantity = 0;
+        decimal totalAmount = 0;
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <!-- Increment total quantity and total amount -->
+                    totalQuantity += item.TotalQuantity;
+                    totalAmount += item.TotalAmount;
+
+                    <tr>
+                        <td>@item.Product.Name</td> <!-- Assuming Product has a Name property -->
+                        <td>@item.TotalQuantity</td>
+                        <td>@item.TotalAmount.ToString("C")</td> <!-- Format as currency -->
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Total Quantity: @totalQuantity</h4> <!-- Display the total quantity -->
+            </div>
+            <div class="col-md-6 text-right">
+                <h4>Total Amount: @totalAmount.ToString("C")</h4> <!-- Display the total amount formatted as currency -->
+            </div>
+        </div>
+    }
+    else
+    {
+        <p>Your cart is empty.</p>
+    }
+</div>

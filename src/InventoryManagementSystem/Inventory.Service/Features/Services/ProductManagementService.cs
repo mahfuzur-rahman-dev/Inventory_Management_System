@@ -56,28 +56,32 @@ namespace Inventory.Service.Features.Services
             return await _categoryManagementService.GetAllCategories();
         }
 
-        //public async Task<Category> GetCategoryIdAsync(Guid id)
-        //{
-        //    return await _unitOfWork.Category.GetAsync(x=>x.Id == id);
-        //}
+        public async Task<Product> GetProductByIdAsync(Guid id)
+        {
+            return await _unitOfWork.Product.GetAsync(x => x.Id == id, includeProperties:"Category");
+        }
 
-        //public async Task RemoveCategoryAsync(Category category)
-        //{
-        //    await _unitOfWork.Category.RemoveAsync(category);
-        //}
+        public async Task RemoveProductAsync(Product product)
+        {
+            await _unitOfWork.Product.RemoveAsync(product);
+        }
 
-        //public async Task UpdateCategoryAsync(Guid id, string name, string description)
-        //{
+        public async Task UpdateProductAsync(Guid id,string name, string description, decimal price, int quantity, Guid? categoryId)
+        {
 
-        //    var category = await GetCategoryIdAsync(id);
-        //    if (category == null)
-        //        throw new Exception("Category not found");
+            var product = await GetProductByIdAsync(id);
+            if (product == null)
+                throw new Exception("Product not found");
 
 
-        //    category.Description = description;
-        //    category.Name = name;
-        //    await _unitOfWork.Category.UpdateAsync(category);
+            product.Description = description;
+            product.Name = name;
+            product.Price = price;
+            product.QuantityInStock = quantity;
+            if(categoryId != null)
+                product.CategoryId = (Guid)categoryId;
+            await _unitOfWork.Product.UpdateAsync(product);
 
-        //}
+        }
     }
 }

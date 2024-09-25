@@ -1,4 +1,5 @@
-﻿using Inventory.DataAccess.UnitOfWork;
+﻿using Inventory.DataAccess.Entites;
+using Inventory.DataAccess.UnitOfWork;
 using Inventory.Presentation.Models;
 using Inventory.Presentation.Models.VM;
 using Inventory.Service.Features.Services;
@@ -61,75 +62,93 @@ namespace Inventory.Presentation.Controllers
         }
 
 
-        //public async Task<IActionResult> Update(Guid id)
-        //{
-        //    var category = await _categoryManagementService.GetCategoryIdAsync(id);
-        //    if (category == null)
-        //        throw new Exception("Category not found");
+        public async Task<IActionResult> Update(Guid id)
+        {
+            var product = await _productManagementService.GetProductByIdAsync(id);
+            if (product == null)
+                throw new Exception("Product not found");
 
-        //    var model = new UpdateCategoryModel();
-        //    model.Description = category.Description;
-        //    model.Name = category.Name;
-        //    model.Id = category.Id;
+            var model = new UpdateProductModel();
+            model.Description = product.Description;
+            model.Name = product.Name;
+            model.Price = product.Price;
+            model.QuantityInStock = product.QuantityInStock;
+            model.CategoryId = product.Id;
 
-        //    return View(model);
-        //}
+            var categories = await _productManagementService.GetAllCategoryNameAsync();
 
-        //[HttpPost]
-        //public async Task<IActionResult> Update(UpdateCategoryModel model)
-        //{
+            ViewBag.Categories = categories.Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            if (model.Name == null)
-        //                return View(model);
-        //            await _categoryManagementService.UpdateCategoryAsync(model.Id, model.Name, model.Description);
-        //            TempData["success"] = "Category updated successfully";
-        //            return RedirectToAction("Index");
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine(ex.Message);
-        //        }
-        //    }
-        //    TempData["error"] = "Error occured";
+            ViewBag.SelectedCategory = new SelectListItem
+            {
+                Text = product.Category.Name,
+                Value = product.Category.Id.ToString()
+            };
+            return View(model);
+        }
 
-        //    return View(model);
-        //}
+        [HttpPost]
+        public async Task<IActionResult> Update(UpdateProductModel model)
+        {
 
-        //public async Task<IActionResult> Delete(Guid id)
-        //{
-        //    var category = await _categoryManagementService.GetCategoryIdAsync(id);
-        //    if (category == null)
-        //        throw new Exception("Category not found");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (model.Name == null)
+                        return View(model);
+                    await _productManagementService.UpdateProductAsync(model.Id, model.Name, model.Description,model.Price,model.QuantityInStock,model.CategoryId);
+                    TempData["success"] = "Category updated successfully";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            TempData["error"] = "Error occured";
 
-        //    var model = new UpdateCategoryModel();
-        //    model.Description = category.Description;
-        //    model.Name = category.Name;
-        //    model.Id = category.Id;
+            return View(model);
+        }
 
-        //    return View(model);
-        //}
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var product = await _productManagementService.GetProductByIdAsync(id);
+            if (product == null)
+                throw new Exception("Product not found");
 
-        //[HttpPost]
-        //public async Task<IActionResult> Delete(UpdateCategoryModel model)
-        //{
-        //    try
-        //    {
-        //        var category = await _categoryManagementService.GetCategoryIdAsync(model.Id);
-        //        if (category == null)
-        //            throw new Exception("Category not found");
+            var model = new UpdateProductModel();
+            model.Description = product.Description;
+            model.Name = product.Name;
+            model.Price = product.Price;
+            model.QuantityInStock = product.QuantityInStock;
+            model.CategoryId = product.Id;
+            ViewBag.SelectedCategoryName = product.Category.Name;
 
-        //        await _categoryManagementService.RemoveCategoryAsync(category);
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.Message);
-        //    }
-        //    return View();
-        //}
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(UpdateProductModel model)
+        {
+            try
+            {
+                var product = await _productManagementService.GetProductByIdAsync(model.Id);
+                if (product == null)
+                    throw new Exception("Product not found");
+
+                await _productManagementService.RemoveProductAsync(product);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return View();
+        }
     }
 }

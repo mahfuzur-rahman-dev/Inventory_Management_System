@@ -17,11 +17,27 @@ namespace Inventory.Presentation.Controllers
             _productManagementService = productManagementService;
         }
 
+        public async Task<IActionResult> AllProducts()
+        {
+            var products = await _productManagementService.GetAllProducts();
+            return View(products);
+        }
+
+        public async Task<IActionResult> Details(Guid id)
+        {
+            var product = await _productManagementService.GetProductByIdAsync(id);
+            if (product == null)
+                throw new Exception("Product not found");
+            return View(product);
+        }
+        
+
         public async Task<IActionResult> Index()
         {
             var products = await _productManagementService.GetAllProducts();
             return View(products);
         }
+
 
         public async Task<IActionResult> Create()
         {
@@ -32,7 +48,7 @@ namespace Inventory.Presentation.Controllers
                 Text = i.Name,
                 Value = i.Id.ToString()
             });
-       
+
             return View();
         }
 
@@ -46,7 +62,7 @@ namespace Inventory.Presentation.Controllers
                 {
                     if (model.Name == null)
                         return View(model);
-                    await _productManagementService.CreateProductAsync(model.Name, model.Description, model.Price,model.QuantityInStock, model.CategoryId);
+                    await _productManagementService.CreateProductAsync(model.Name, model.Description, model.Price, model.QuantityInStock, model.CategoryId);
 
                     TempData["success"] = "product created successfully";
                     return RedirectToAction("Index");
@@ -101,7 +117,7 @@ namespace Inventory.Presentation.Controllers
                 {
                     if (model.Name == null)
                         return View(model);
-                    await _productManagementService.UpdateProductAsync(model.Id, model.Name, model.Description,model.Price,model.QuantityInStock,model.CategoryId);
+                    await _productManagementService.UpdateProductAsync(model.Id, model.Name, model.Description, model.Price, model.QuantityInStock, model.CategoryId);
                     TempData["success"] = "Category updated successfully";
                     return RedirectToAction("Index");
                 }

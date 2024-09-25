@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Inventory.Service\Inventory.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\adminkit\fonts\" />
+  </ItemGroup>
+
 </Project>

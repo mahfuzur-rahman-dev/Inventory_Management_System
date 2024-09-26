@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Cart>
+﻿@model IEnumerable<OrderDetail>
 
 <div class="container">
     <h2>Your Cart</h2>
@@ -40,6 +40,10 @@
             <div class="col-md-6 text-right">
                 <h4>Total Amount: @totalAmount.ToString("C")</h4> <!-- Display the total amount formatted as currency -->
             </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <button onclick="return placeOrder('')" type="button" class="btn btn-primary form-control py-2">Place order</button>
         </div>
     }
     else

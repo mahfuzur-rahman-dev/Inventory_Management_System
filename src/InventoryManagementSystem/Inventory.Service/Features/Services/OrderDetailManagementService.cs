@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Inventory.Service.Features.Services
 {
-    public class CartManagementService : ICartManagementService
+    public class OrderDetailManagementService : IOrderDetailManagementService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProductManagementService _productManagementService;
         private readonly UserManager<ApplicationIdentityUser> _userManager;
-        public CartManagementService(IUnitOfWork unitOfWork,IProductManagementService productManagementService, UserManager<ApplicationIdentityUser> userManager)
+        public OrderDetailManagementService(IUnitOfWork unitOfWork,IProductManagementService productManagementService, UserManager<ApplicationIdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _productManagementService = productManagementService;
@@ -24,54 +24,54 @@ namespace Inventory.Service.Features.Services
         }
 
 
-        public async Task<IEnumerable<Cart>> GetAllCart()
+        public async Task<IEnumerable<OrderDetail>> GetAllOrderDetail()
         {
-            return await _unitOfWork.Cart.GetAllAsync();
+            return await _unitOfWork.OrderDetail.GetAllAsync();
         }
 
 
-        public async Task AddToCartAsync(int count, Guid productId,Guid userId)
+        public async Task AddToOrderDetailAsync(int count, Guid productId,Guid userId)
         {
             var product = await GetProductById(productId);
 
-            var existanceObj = await _unitOfWork.Cart.GetAllAsync(x => x.UserId == userId && x.ProductId == productId);
+            var existanceObj = await _unitOfWork.OrderDetail.GetAllAsync(x => x.UserId == userId && x.ProductId == productId);
             if(existanceObj.Count == 1 && product is not null)
             {
                 var obj = existanceObj.FirstOrDefault();
                 obj.TotalQuantity += count;
                 obj.TotalAmount = obj.TotalAmount + (product.Price * count);
 
-                await _unitOfWork.Cart.UpdateAsync(obj);
+                await _unitOfWork.OrderDetail.UpdateAsync(obj);
                 return;
             }
 
-            var cartObj = new Cart()
+            var cartObj = new OrderDetail()
             {
                 UserId = userId,
                 ProductId = productId,
                 TotalQuantity = count,
                 TotalAmount = (product.Price * count),
             };
-            await _unitOfWork.Cart.CreateAsync(cartObj);
+            await _unitOfWork.OrderDetail.CreateAsync(cartObj);
             
 
         }
 
 
-        public async Task<Cart> GetCartByIdAsync(Guid id)
+        public async Task<OrderDetail> GetOrderDetailByIdAsync(Guid id)
         {
-            return await _unitOfWork.Cart.GetAsync(x=>x.Id == id);
+            return await _unitOfWork.OrderDetail.GetAsync(x=>x.Id == id);
         }
 
-        public async Task RemoveCartAsync(Cart cart)
+        public async Task RemoveOrderDetailAsync(OrderDetail cart)
         {
-            await _unitOfWork.Cart.RemoveAsync(cart);
+            await _unitOfWork.OrderDetail.RemoveAsync(cart);
         }
 
-        public async Task UpdateCartAsync(Guid id, string name, string description)
+        public async Task UpdateOrderDetailAsync(Guid id, string name, string description)
         {
             
-            var category = await GetCartByIdAsync(id);
+            var category = await GetOrderDetailByIdAsync(id);
             if (category == null)
                 throw new Exception("Category not found");
 
@@ -87,9 +87,9 @@ namespace Inventory.Service.Features.Services
             return await _productManagementService.GetProductByIdAsync(productId);
         }
 
-        public async Task<IEnumerable<Cart>> GetCartByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<OrderDetail>> GetOrderDetailByUserIdAsync(Guid userId)
         {
-            return await _unitOfWork.Cart.GetAllAsync(x => x.UserId == userId, includeProperties:"User,Product");
+            return await _unitOfWork.OrderDetail.GetAllAsync(x => x.UserId == userId, includeProperties:"User,Product");
         }
     }
 }

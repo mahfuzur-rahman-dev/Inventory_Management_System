@@ -10,14 +10,14 @@ using System.Security.Claims;
 
 namespace Inventory.Presentation.Controllers
 {
-    public class CartController : Controller
+    public class OrderDetailController : Controller
     {
-        private readonly ICartManagementService _cartManagementService;
+        private readonly IOrderDetailManagementService _orderDetailManagementService;
         private readonly UserManager<ApplicationIdentityUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
-        public CartController(ICartManagementService cartManagementService, UserManager<ApplicationIdentityUser> userManager, IUnitOfWork unitOfWork)
+        public OrderDetailController(IOrderDetailManagementService orderDetailManagementService, UserManager<ApplicationIdentityUser> userManager, IUnitOfWork unitOfWork)
         {
-            _cartManagementService = cartManagementService;
+            _orderDetailManagementService = orderDetailManagementService;
             _userManager = userManager;
             _unitOfWork = unitOfWork;
         }
@@ -27,23 +27,23 @@ namespace Inventory.Presentation.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var cartEntriesOfUser = await _cartManagementService.GetCartByUserIdAsync(Guid.Parse(userId));
+            var cartEntriesOfUser = await _orderDetailManagementService.GetOrderDetailByUserIdAsync(Guid.Parse(userId));
             return View(cartEntriesOfUser);
         }
 
         
 
-        public async Task<IActionResult> AddToCart(int count, Guid productId)
+        public async Task<IActionResult> AddToOrderDetail(int count, Guid productId)
         {
             try
             {
                 var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                var product = await _cartManagementService.GetProductById(productId);
+                var product = await _orderDetailManagementService.GetProductById(productId);
                 if (product == null)
                     throw new Exception("Product not found");
 
-                await _cartManagementService.AddToCartAsync(count, product.Id,userId);
+                await _orderDetailManagementService.AddToOrderDetailAsync(count, product.Id,userId);
 
                 return Json(new { success = true, message = "Product added to cart." });
                 
@@ -53,8 +53,8 @@ namespace Inventory.Presentation.Controllers
                 Console.WriteLine(ex.Message);
             }
 
-            var cartEntriesOfUser = await _cartManagementService.GetCartByIdAsync(Guid.Empty);
-            return RedirectToAction("ViewCart");
+            var cartEntriesOfUser = await _orderDetailManagementService.GetOrderDetailByIdAsync(Guid.Empty);
+            return RedirectToAction("ViewOrderDetail");
         }
 
     }

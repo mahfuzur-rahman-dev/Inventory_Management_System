@@ -53,13 +53,13 @@
             <a asp-controller="Product" asp-action="AllProducts" class="btn btn-success form-control py-2">Back to List</a>
         </div>
         <div class="col-12 col-md-6">
-            <button onclick="return placeOrder('@Model.Id')" type="button" class="btn btn-primary form-control py-2">Place order</button>
+            <button onclick="return addToCart('@Model.Id')" type="button" class="btn btn-primary form-control py-2">Add to cart</button>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    function placeOrder(productId) {
+    function addToCart(productId) {
         let count = $('#orderCount').val();
         let userId = $('#userId').val(); // Get the userId from the hidden field
 
@@ -73,7 +73,7 @@
         }
 
         $.ajax({
-            url: '@Url.Action("AddToCart", "Cart")', // Action to handle the order
+            url: '@Url.Action("AddToOrderDetail", "OrderDetail")', // Action to handle the order
             type: 'POST',
             data: {
                 count: count,

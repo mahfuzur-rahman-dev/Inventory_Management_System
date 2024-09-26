@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Inventory.DataAccess.Repositories.IRepositories
 {
-    public interface ICartRepository  : IRepository<Cart>
+    public interface IOrderDetailRepository : IRepository<OrderDetail>
     {
-        Task UpdateAsync(Cart entity);
+        Task UpdateAsync(OrderDetail entity);
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Inventory.DataAccess.Entites
 {
-    public class Cart
+    public class OrderDetail
     {
         public Guid Id { get; set; }
         public Guid UserId { get; set; }

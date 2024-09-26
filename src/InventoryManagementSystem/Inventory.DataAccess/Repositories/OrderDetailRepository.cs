@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace Inventory.DataAccess.Repositories
 {
-    public class CartRepository : Repository<Cart>, ICartRepository
+    public class OrderDetailRepository : Repository<OrderDetail>, IOrderDetailRepository
     {
         private readonly ApplicationDbContext _context;
-        public CartRepository(ApplicationDbContext context) : base(context)
+        public OrderDetailRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;
         }
 
-        public async Task UpdateAsync(Cart entity)
+        public async Task UpdateAsync(OrderDetail entity)
         {
-            _context.Carts.Update(entity);
+            _context.OrderDetails.Update(entity);
             await SaveAsync();
         }
 

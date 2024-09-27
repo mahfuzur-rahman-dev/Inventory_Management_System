@@ -26,7 +26,7 @@ namespace Inventory.Presentation.Controllers
             try
             {
                 //await _orderManagementService.CreateOrderAsync(userId,TotalQuantity, dtoTotalAmount);
-                
+
                 return Json(new { success = true, message = "Order placed successfully!" });
             }
             catch (Exception ex)
@@ -44,7 +44,7 @@ namespace Inventory.Presentation.Controllers
             return View(orders);
         }
 
-        public async Task<IActionResult> CreateSaleOrder()
+        public async Task<IActionResult> CreateOrder()
         {
             var products = await _orderManagementService.GetAllProductNameAsync();
 
@@ -53,11 +53,22 @@ namespace Inventory.Presentation.Controllers
                 Text = i.Name,
                 Value = i.Id.ToString()
             });
+
+
+            ViewBag.OrderTypes = Enum.GetValues(typeof(OrderType))
+            .Cast<OrderType>()
+            .Select(o => new SelectListItem
+            {
+                Text = o.ToString(),
+                Value = o.ToString()
+            }).ToList();
+
+
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateSaleOrder(CreateSaleOrderModel model)
+        public async Task<IActionResult> CreateOrder(CreateOrderModel model)
         {
             if (ModelState.IsValid)
             {
@@ -66,7 +77,7 @@ namespace Inventory.Presentation.Controllers
                 {
                     var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                    await _orderManagementService.CreateSaleOrder(userId,model.ProductId,model.SaleQuantity, model.UnitPrice,model.TotalAmount);
+                    await _orderManagementService.CreateOrderAsync(userId, model.ProductId, model.SaleQuantity, model.UnitPrice, model.TotalAmount, model.OrderType);
                 }
                 catch (Exception ex)
                 {

@@ -29,7 +29,7 @@ namespace Inventory.Service.Features.Services
         }
 
 
-        public async Task CreateOrderAsync(Guid userId, Guid productId, int totoalQuantity, decimal unitPrice, decimal totalAmount, string? orderType)
+        public async Task CreateOrderAsync(Guid userId, Guid productId, int totoalQuantity, decimal unitPrice, decimal totalAmount, string orderType)
         {
             
             try
@@ -46,7 +46,6 @@ namespace Inventory.Service.Features.Services
                    UnitPrice = unitPrice,
                    OrderType = orderType,
                    CreatedDate = DateTime.Now,
-                   UpdatedDate = DateTime.Now,
                    Product = product
                 };
 
@@ -86,9 +85,5 @@ namespace Inventory.Service.Features.Services
             return await _productManagementService.GetAllProducts();
         }
 
-        public async Task CreateSaleOrder(Guid userId,Guid productId, int saleQuantity, decimal unitPrice, decimal totalAmount)
-        {
-            await CreateOrderAsync(userId,productId,saleQuantity,unitPrice,totalAmount,OrderType.Sale.ToString());
-        }
     }
 }

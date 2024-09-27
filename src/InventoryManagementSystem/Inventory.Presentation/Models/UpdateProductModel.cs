@@ -10,7 +10,8 @@ namespace Inventory.Presentation.Models
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public decimal Price { get; set; }
+        public decimal BuyingPrice { get; set; }
+        public decimal MinimumSellingPrice { get; set; }
 
         public int QuantityInStock { get; set; }
 

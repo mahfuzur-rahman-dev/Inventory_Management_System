@@ -9,7 +9,10 @@ namespace Inventory.Presentation.Models
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Price is required")]
-        public decimal Price { get; set; }
+        public decimal MinimumSellingPrice { get; set; }
+
+        [Required(ErrorMessage = "Price is required")]
+        public decimal BuyingPrice { get; set; }
 
         [Required(ErrorMessage = "Product quantity is required")]
         public int QuantityInStock { get; set; }

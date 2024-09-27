@@ -12,7 +12,8 @@ namespace Inventory.DataAccess.Entites
         public Guid Id { get; set; } 
         public string Name { get; set; } 
         public string Description { get; set; } 
-        public decimal Price { get; set; } 
+        public decimal BuyingPrice { get; set; } 
+        public decimal MinimumSellingPrice { get; set; } 
         public int QuantityInStock { get; set; }
         public Guid CategoryId { get; set; }
 

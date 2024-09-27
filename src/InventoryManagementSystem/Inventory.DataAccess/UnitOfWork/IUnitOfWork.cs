@@ -12,5 +12,6 @@ namespace Inventory.DataAccess.UnitOfWork
         IProductRepository Product { get; }
         ICategoryRepository Category { get; }
         IOrderDetailRepository OrderDetail { get; }
+        IOrderRepository Order { get; }
     }
 }

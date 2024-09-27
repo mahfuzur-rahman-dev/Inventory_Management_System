@@ -12,6 +12,7 @@ namespace Inventory.Presentation.Extension
             services.AddScoped<ICategoryManagementService, CategoryManagementService>();
             services.AddScoped<IProductManagementService, ProductManagementService>();
             services.AddScoped<IOrderDetailManagementService, OrderDetailManagementService>();
+            services.AddScoped<IOrderManagementService, OrderManagementService>();
 
             return services;
         }

@@ -43,11 +43,46 @@
         </div>
 
         <div class="col-12 col-md-6">
-            <button onclick="return placeOrder('')" type="button" class="btn btn-primary form-control py-2">Place order</button>
+            <button onclick="return placeOrder('@totalQuantity','@totalAmount')" type="button" class="btn btn-primary form-control py-2">Place order</button>
         </div>
+
     }
     else
     {
         <p>Your cart is empty.</p>
     }
 </div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+
+        function placeOrder(totalQuantity, totalAmount) {
+            $.ajax({
+                url: '@Url.Action("PlaceOrder", "Order")',
+                type: 'POST',
+                data: {
+                    totalQuantity: totalQuantity,
+                    totalAmount: totalAmount
+                },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire('Order placed successfully!', '', 'success').then(() => {
+                            window.location.href = '@Url.Action("Index", "Product")';
+                        });
+                    } else {
+                        Swal.fire('Failed to place the order.', response.message || '', 'error');
+                    }
+                },
+                error: function () {
+                    Swal.fire('Error occurred while placing the order.', '', 'error');
+                }
+            });
+
+            return false;
+        }
+    </script>
+}
+
+
+

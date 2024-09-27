@@ -82,7 +82,7 @@
             success: function (response) {
                 if (response.success) {
                     Swal.fire('Order placed successfully!', '', 'success').then(() => {
-                        window.location.href = '@Url.Action("ViewCart", "Cart")';
+                        window.location.href = '@Url.Action("ViewCart", "OrderDetail")';
                     });
                 } else {
                     Swal.fire('Failed to place the order.', response.message || '', 'error');

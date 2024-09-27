@@ -1,7 +1,10 @@
 ﻿using Inventory.DataAccess.Entites;
+using Inventory.DataAccess.Enums;
 using Inventory.Presentation.Models;
+using Inventory.Service.Features.Services;
 using Inventory.Service.Features.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 
 namespace Inventory.Presentation.Controllers
@@ -16,21 +19,13 @@ namespace Inventory.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PlaceOrder(ViewCartDTO dto)
+        public async Task<IActionResult> PlaceOrder(int totalQuantity, Guid productId, string orderType)
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            IEnumerable<OrderDetail> orderDetailsEnumerable = await _orderManagementService.GetAllOrderDetailsByUserId(userId);
-            List<OrderDetail> orderDetails = orderDetailsEnumerable.ToList();
-
-
-            if (orderDetails == null || !orderDetails.Any())
-            {
-                return Json(new { success = false, message = "No order details received." });
-            }
 
             try
             {
-                await _orderManagementService.CreateOrderAsync(orderDetails,userId, dto.TotalQuantity, dto.TotalAmount);
+                //await _orderManagementService.CreateOrderAsync(userId,TotalQuantity, dtoTotalAmount);
                 
                 return Json(new { success = true, message = "Order placed successfully!" });
             }
@@ -48,5 +43,38 @@ namespace Inventory.Presentation.Controllers
 
             return View(orders);
         }
+
+        public async Task<IActionResult> CreateSaleOrder()
+        {
+            var products = await _orderManagementService.GetAllProductNameAsync();
+
+            ViewBag.Products = products.Select(i => new SelectListItem
+            {
+                Text = i.Name,
+                Value = i.Id.ToString()
+            });
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateSaleOrder(CreateSaleOrderModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                try
+                {
+                    var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                    await _orderManagementService.CreateSaleOrder(userId,model.ProductId,model.SaleQuantity, model.UnitPrice,model.TotalAmount);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return View(model);
+        }
+
     }
 }

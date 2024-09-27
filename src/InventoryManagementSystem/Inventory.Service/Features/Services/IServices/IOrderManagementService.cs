@@ -11,9 +11,10 @@ namespace Inventory.Service.Features.Services.IServices
     {
         Task<IEnumerable<Order>> GetAllOrder();
         Task<Order> GetOrderByIdAsync(Guid id);
-        Task CreateOrderAsync(List<OrderDetail> orderDetails,Guid userId, int totalQuantity, decimal totalPrice);
+        Task CreateOrderAsync(Guid userId, Guid productId, int totoalQuantity, decimal unitPrice, decimal totalAmount, string? orderType);
         Task RemoveOrderAsync(Order category);
         Task<IEnumerable<Order>> GetOrderByUserIdAsync(Guid userId);
-        Task<IEnumerable<OrderDetail>> GetAllOrderDetailsByUserId(Guid userId);
+        Task<IEnumerable<Product>> GetAllProductNameAsync();
+        Task CreateSaleOrder(Guid userId,Guid productId, int saleQuantity, decimal unitPrice, decimal totalAmount);
     }
 }

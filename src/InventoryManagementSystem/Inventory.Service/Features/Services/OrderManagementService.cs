@@ -15,11 +15,11 @@ namespace Inventory.Service.Features.Services
     public class OrderManagementService : IOrderManagementService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IOrderDetailManagementService _orderDetailManagementService;
-        public OrderManagementService(IUnitOfWork unitOfWork, IOrderDetailManagementService orderDetailManagementService)
+        private readonly IProductManagementService _productManagementService;
+        public OrderManagementService(IUnitOfWork unitOfWork,  IProductManagementService productManagementService)
         {
             _unitOfWork = unitOfWork;
-            _orderDetailManagementService = orderDetailManagementService;
+            _productManagementService = productManagementService;
         }
 
 
@@ -29,18 +29,25 @@ namespace Inventory.Service.Features.Services
         }
 
 
-        public async Task CreateOrderAsync(List<OrderDetail> orderDetails, Guid userId, int totalQuantity, decimal totalPrice)
+        public async Task CreateOrderAsync(Guid userId, Guid productId, int totoalQuantity, decimal unitPrice, decimal totalAmount, string? orderType)
         {
+            
             try
             {
+                var product = await _productManagementService.GetProductByIdAsync(productId);
+                if (product == null)
+                    throw new Exception("Product not found");
+
                 var order = new Order
                 {
-                    OrderDate = DateTime.Now,
-                    OrderType = OrderType.Sale.ToString(),
-                    TotalAmount = totalPrice,
-                    TotalQuantity = totalQuantity,
-                    CustomerId = userId,
-                    OrderDetails = orderDetails
+                   ProductId = productId,
+                   TotalQuantity = totoalQuantity,
+                   TotalAmount = totalAmount,
+                   UnitPrice = unitPrice,
+                   OrderType = orderType,
+                   CreatedDate = DateTime.Now,
+                   UpdatedDate = DateTime.Now,
+                   Product = product
                 };
 
                 await _unitOfWork.Order.CreateAsync(order);
@@ -72,9 +79,16 @@ namespace Inventory.Service.Features.Services
             return await _unitOfWork.Order.GetAllAsync(x => x.CustomerId == userId, includeProperties: "User,Product");
         }
 
-        public async Task<IEnumerable<OrderDetail>> GetAllOrderDetailsByUserId(Guid userId)
+        
+
+        public async Task<IEnumerable<Product>> GetAllProductNameAsync()
         {
-            return await _orderDetailManagementService.GetOrderDetailByUserIdAsync(userId);
+            return await _productManagementService.GetAllProducts();
+        }
+
+        public async Task CreateSaleOrder(Guid userId,Guid productId, int saleQuantity, decimal unitPrice, decimal totalAmount)
+        {
+            await CreateOrderAsync(userId,productId,saleQuantity,unitPrice,totalAmount,OrderType.Sale.ToString());
         }
     }
 }

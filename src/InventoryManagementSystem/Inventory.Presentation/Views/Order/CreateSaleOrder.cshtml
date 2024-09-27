@@ -1,0 +1,71 @@
+﻿@model CreateSaleOrderModel;
+
+@{
+    var products = ViewBag.Products;
+    ViewData["Title"] = "Create";
+}
+
+<form asp-action="CreateSaleOrder" asp-controller="Order" method="post" asp-antiforgery="true">
+    <br />
+
+    <div class="container p-3">
+        <h1>Add a sale</h1>
+        <hr />
+    </div>
+
+    <div class="row p-4 border border-2 border-dark">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="ProductId" class="control-label"></label>
+            <select asp-for="ProductId" asp-items="products" class="form-select">
+                <option selected>---- Select category -----</option>
+            </select>
+            <span asp-validation-for="ProductId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="SaleQuantity" class="control-label"></label>
+            <input asp-for="SaleQuantity" id="saleQuantity" placeholder="Enter quantity" class="form-control" />
+            <span asp-validation-for="SaleQuantity" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="UnitPrice" class="control-label"></label>
+            <input asp-for="UnitPrice" id="unitPrice" placeholder="Enter unit price" class="form-control" />
+            <span asp-validation-for="UnitPrice" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="TotalAmount" class="control-label"></label>
+            <input asp-for="TotalAmount" id="totalAmount" placeholder="Total amount" class="form-control" readonly />
+            <span asp-validation-for="TotalAmount" class="text-danger"></span>
+        </div>
+
+        <div class="form-group d-flex justify-content-left mt-3">
+            <button type="submit" class="btn btn-primary w-25">Create</button>
+            <a asp-action="CreateSaleOrder" asp-controller="Order" class="mx-2">Back to list</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            function calculateTotal() {
+                var quantity = parseFloat($('#saleQuantity').val());
+                var unitPrice = parseFloat($('#unitPrice').val());
+                var total = 0;
+
+                if (!isNaN(quantity) && !isNaN(unitPrice)) {
+                    total = quantity * unitPrice;
+                }
+
+                $('#totalAmount').val(total.toFixed(2)); // Display total with 2 decimal places
+            }
+
+            $('#saleQuantity, #unitPrice').on('input', calculateTotal);
+        });
+    </script>
+}

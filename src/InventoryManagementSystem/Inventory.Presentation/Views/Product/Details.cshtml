@@ -53,15 +53,16 @@
             <a asp-controller="Product" asp-action="AllProducts" class="btn btn-success form-control py-2">Back to List</a>
         </div>
         <div class="col-12 col-md-6">
-            <button onclick="return addToCart('@Model.Id')" type="button" class="btn btn-primary form-control py-2">Add to cart</button>
+            <button onclick="return placeOrder('@Model.Id')" type="button" class="btn btn-primary form-control py-2">Place order</button>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    function addToCart(productId) {
+    function placeOrder(productId) {
         let count = $('#orderCount').val();
         let userId = $('#userId').val(); // Get the userId from the hidden field
+        let orderType = "sale";
 
         if (!count || count <= 0) {
             Swal.fire({
@@ -73,16 +74,17 @@
         }
 
         $.ajax({
-            url: '@Url.Action("AddToOrderDetail", "OrderDetail")', // Action to handle the order
+            url: '@Url.Action("PlaceOrder", "Order")', // Action to handle the order
             type: 'POST',
             data: {
                 count: count,
                 productId: productId,
+                orderType: orderType
             },
             success: function (response) {
                 if (response.success) {
                     Swal.fire('Order placed successfully!', '', 'success').then(() => {
-                        window.location.href = '@Url.Action("ViewCart", "OrderDetail")';
+                        window.location.href = '@Url.Action("PlaceOrder", "Order")';
                     });
                 } else {
                     Swal.fire('Failed to place the order.', response.message || '', 'error');

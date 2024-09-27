@@ -25,9 +25,20 @@ namespace Inventory.Service.Features.Services
 
         public async Task<IEnumerable<Order>> GetAllOrder()
         {
-            return await _unitOfWork.Order.GetAllAsync(includeProperties:"OrderDetails");
+            return await _unitOfWork.Order.GetAllAsync(includeProperties:"Product");
         }
 
+
+        public async Task<IEnumerable<Order>> GetAllSaleOrder()
+        {
+            return await _unitOfWork.Order.GetAllAsync(x => x.OrderType == OrderType.Sale.ToString(), includeProperties: "Product");
+
+        }
+
+        public async Task<IEnumerable<Order>> GetAllPurchaseOrder()
+        {
+            return await _unitOfWork.Order.GetAllAsync(x=>x.OrderType == OrderType.Purchase.ToString(), includeProperties: "Product");
+        }
 
         public async Task CreateOrderAsync(Guid userId, Guid productId, int totoalQuantity, decimal unitPrice, decimal totalAmount, string orderType)
         {
@@ -85,5 +96,32 @@ namespace Inventory.Service.Features.Services
             return await _productManagementService.GetAllProducts();
         }
 
+        public async Task UpdateOrderAsync(Guid orderId, Guid productId, int totoalQuantity, decimal unitPrice, decimal totalAmount, string orderType)
+        {
+            try
+            {
+                var product = await _productManagementService.GetProductByIdAsync(productId);
+                if (product == null)
+                    throw new Exception("Product not found");
+
+                var order = await GetOrderByIdAsync(orderId);
+                if (order == null)
+                    throw new Exception("Order not found");
+
+                order.ProductId = productId;
+                order.TotalQuantity = totoalQuantity;
+                order.UnitPrice = unitPrice;
+                order.TotalAmount = totalAmount;
+                order.OrderType = orderType;
+
+                await _unitOfWork.Order.UpdateAsync(order);
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
     }
 }

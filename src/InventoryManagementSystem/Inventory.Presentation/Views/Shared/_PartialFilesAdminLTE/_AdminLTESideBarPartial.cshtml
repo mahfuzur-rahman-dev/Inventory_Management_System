@@ -1,0 +1,107 @@
+﻿<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    <!--begin::Sidebar Brand-->
+    <div class="sidebar-brand"> <!--begin::Brand Link--> <a href="./index.html" class="brand-link"> <!--begin::Brand Image--> <img src="~/adminLTE/dist/assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image opacity-75 shadow"> <!--end::Brand Image--> <!--begin::Brand Text--> <span class="brand-text fw-light">AdminLTE 4</span> <!--end::Brand Text--> </a> <!--end::Brand Link--> </div> <!--end::Sidebar Brand--> <!--begin::Sidebar Wrapper-->
+
+
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+               
+
+                <li class="nav-item">
+                    <a asp-controller="Product" asp-action="Index" class="nav-link">
+                        <i class="nav-icon bi bi-palette"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+
+
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        <p>
+                            Category
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-controller="Category" asp-action="Index" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Manage categories</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="category" asp-action="Create" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Add category</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        <p>
+                            Product
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-controller="Product" asp-action="Index" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Manage products</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Product" asp-action="Create" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Add product</p>
+                            </a>
+                        </li>
+                      
+                    </ul>
+                </li>
+
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        <p>
+                            Order
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-controller="Order" asp-action="CreateOrder" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Add order</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Order" asp-action="CreateOrder" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>View sale order</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Order" asp-action="CreateOrder" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>View purchase order</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+            </ul> 
+        </nav>
+    </div> 
+</aside> 

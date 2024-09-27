@@ -5,60 +5,61 @@
 @{
     ViewData["Title"] = "Create";
 }
+<div class="container p-4 pt-0 mt-1 border border-2 border-dark">
 
-<form asp-action="Create" asp-controller="Product" method="post" asp-antiforgery="true">
-    <br />
+    <form asp-action="Create" asp-controller="Product" method="post" asp-antiforgery="true">
+        <br />
 
-    <div class="container p-3">
-        <h1>Create a product</h1>
-        <hr />
-    </div>
-
-    <div class="row p-4 border border-2 border-dark">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-
-        <div class="form-group">
-            <label asp-for="Name" class="control-label"></label>
-            <input asp-for="Name" placeholder="Enter product name" class="form-control" required />
-            <span asp-validation-for="Name" class="text-danger"></span>
+        <div class=" p-3">
+            <h1>Create a product</h1>
+            <hr />
         </div>
 
-        <div class="form-group mt-2">
-            <label asp-for="Description" class="control-label"></label>
-            <textarea asp-for="Description" rows="4" placeholder=" Enter product description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
+        <div class="row p-4 border ">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" placeholder="Enter product name" class="form-control" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-2">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" rows="4" placeholder=" Enter product description" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" placeholder="Enter product price" class="form-control" required />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" asp-items="CategoryNames" class="form-select">
+                    <option selected>---- Select category -----</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="QuantityInStock" class="control-label"></label>
+                <input asp-for="QuantityInStock" placeholder="Enter stock" class="form-control" required />
+                <span asp-validation-for="QuantityInStock" class="text-danger"></span>
+            </div>
+
+            <div class="form-group d-flex justify-content-left mt-3">
+                <button type="submit" class="btn btn-primary w-25">Create</button>
+                <a asp-action="Index" asp-controller="Product" class="mx-2">Back to list</a>
+
+            </div>
+
         </div>
-
-        <div class="form-group">
-            <label asp-for="Price" class="control-label"></label>
-            <input asp-for="Price" placeholder="Enter product price" class="form-control" required />
-            <span asp-validation-for="Price" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="CategoryId" class="control-label"></label>
-            <select asp-for="CategoryId" asp-items="CategoryNames" class="form-select">
-                <option selected>---- Select category -----</option>
-            </select>
-            <span asp-validation-for="CategoryId" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="QuantityInStock" class="control-label"></label>
-            <input asp-for="QuantityInStock" placeholder="Enter stock" class="form-control" required />
-            <span asp-validation-for="QuantityInStock" class="text-danger"></span>
-        </div>
-
-        <div class="form-group d-flex justify-content-left mt-3">
-            <button type="submit" class="btn btn-primary w-25">Create</button>
-            <a asp-action="Index" asp-controller="Product" class="mx-2">Back to list</a>
-
-        </div>
-
-    </div>
-</form>
-
+    </form>
+</div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

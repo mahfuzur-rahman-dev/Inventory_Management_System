@@ -1,6 +1,8 @@
 ﻿@model IEnumerable<Order>;
 
-<br />
+@{
+    ViewData["Title"] = "Purchase orders";
+}
 
 <div class="container p-4 border">
     <div class="row pb-2">
@@ -9,41 +11,63 @@
         </div>
 
         <div class="col text-end pt-1">
-            <a asp-controller="Order" asp-action="CreateOrder" class="btn btn-outline-primary"><i class="bi bi-plus-circle"></i> Create a order</a>
+            <a asp-controller="Order" asp-action="Create" class="btn btn-outline-primary"><i class="bi bi-plus-circle"></i> Create purchase order</a>
         </div>
     </div>
 
-    <table class="table">
+  
+    <table id="dataTable" class="table table-bordered">
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Date</th>
-                <th>Product name</th>
-                <th>Total quantity</th>
-                <th>Total amount</th>
-                <th style="width:20%;">Action</th>
+                <th class="text-center">Serial no.</th>
+                <th class="text-center">Date</th>
+                <th class="text-center">Product name</th>
+                <th class="text-center">Total quantity</th>
+                <th class="text-center">Total amount</th>
+                <th class="text-center">Action</th>
+
             </tr>
         </thead>
 
         <tbody>
+
             @{
+                var serialNo = 1;
                 foreach (var data in Model)
                 {
-
                     <tr>
-                        <td>@data.Id</td>
-                        <td>@data.CreatedDate.ToString("dd MMMM yyyy")</td>
-                        <td>@data.Product.Name</td>
-                        <td>@data.TotalQuantity</td>
-                        <td>@data.TotalAmount</td>
-                        <td>
-                            <a asp-controller="Order" asp-action="UpdateOrder" asp-route-id="@data.Id" class="btn btn-info w-25"><i class="bi bi-pencil-square"></i></a>
-                            <a asp-controller="Order" asp-action="DeleteOrder" asp-route-id="@data.Id" class="btn btn-danger w-25"><i class="bi bi-trash"></i> </a>
+                        <td class="text-center">@serialNo</td>
+                        <td class="text-center">@data.CreatedDate.ToString("dd MMMM yyyy")</td>
+                        <td class="text-center">@data.Product.Name</td>
+                        <td class="text-center">@data.TotalQuantity</td>
+                        <td class="text-center">@data.TotalAmount</td>
+                        <td class="text-center">
+                            <a asp-controller="Order" asp-action="Update" asp-route-id="@data.Id" class="btn btn-info w-25"><i class="bi bi-pencil-square"></i></a>
+                            <a asp-controller="Order" asp-action="Delete" asp-route-id="@data.Id" class="btn btn-danger w-25"><i class="bi bi-trash"></i> </a>
                         </td>
                     </tr>
 
+                    serialNo++;
                 }
             }
         </tbody>
     </table>
 </div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable({
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "searching": true,
+                "columnDefs": [
+                    { "width": "10%", "targets": 0 },
+                    { "width": "20%", "targets": 5 }
+                ]
+            });
+        });
+    </script>
+}

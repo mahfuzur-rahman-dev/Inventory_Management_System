@@ -14,9 +14,11 @@ namespace Inventory.Presentation.Controllers
     public class OrderController : Controller
     {
 
+        private readonly ILogger<OrderController> _logger;
         private readonly IOrderManagementService _orderManagementService;
-        public OrderController(IOrderManagementService orderManagementService)
+        public OrderController(ILogger<OrderController> logger, IOrderManagementService orderManagementService)
         {
+            _logger = logger;
             _orderManagementService = orderManagementService;
         }
      
@@ -24,22 +26,25 @@ namespace Inventory.Presentation.Controllers
         public async Task<IActionResult> Index()
         {
             var orders = await _orderManagementService.GetAllOrder();
+            _logger.LogInformation("Order controller Index loaded");
             return View(orders);
         }
 
         public async Task<IActionResult> SaleOrders()
         {
             var orders = await _orderManagementService.GetAllSaleOrder();
+            _logger.LogInformation("Order controller Sale Orders  loaded");
             return View(orders);
         }
 
         public async Task<IActionResult> PurchaseOrders()
         {
             var orders = await _orderManagementService.GetAllPurchaseOrder();
+            _logger.LogInformation("Order controller purchase orders loaded");
             return View(orders);
         }
 
-        public async Task<IActionResult> CreateOrder()
+        public async Task<IActionResult> Create()
         {
             var products = await _orderManagementService.GetAllProductNameAsync();
 
@@ -58,12 +63,13 @@ namespace Inventory.Presentation.Controllers
                 Value = o.ToString()
             }).ToList();
 
+            _logger.LogInformation("Order Create view page loaded");
 
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(CreateOrderModel model)
+        public async Task<IActionResult> Create(CreateOrderModel model)
         {
             if (ModelState.IsValid)
             {
@@ -73,20 +79,27 @@ namespace Inventory.Presentation.Controllers
                     var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                     await _orderManagementService.CreateOrderAsync(userId, model.ProductId, model.SaleQuantity, model.UnitPrice, model.TotalAmount, model.OrderType);
+                    TempData["Success"] = "Order created successfully";
+                    _logger.LogInformation("New order created....");
+
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    TempData["Error"] = "Failed to create order";
+                    _logger.LogInformation("Error occured in create order post action");
+                    _logger.LogError($"Error: {ex}");
                 }
             }
+            _logger.LogInformation("Error occured for create order model validation failed..");
+            TempData["Error"] = "Failed to create order";
             return View(model);
         }
 
 
 
 
-        public async Task<IActionResult> UpdateOrder(Guid id)
+        public async Task<IActionResult> Update(Guid id)
         {
             var order = await _orderManagementService.GetOrderByIdAsync(id);
             if (order == null || id  == Guid.Empty)
@@ -118,11 +131,13 @@ namespace Inventory.Presentation.Controllers
                 Value = o.ToString()
             }).ToList();
 
+            _logger.LogInformation("Order update view page loaded...");
+
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateOrder(UpdateOrderModel model)
+        public async Task<IActionResult> Update(UpdateOrderModel model)
         {
 
             if (ModelState.IsValid)
@@ -132,20 +147,26 @@ namespace Inventory.Presentation.Controllers
                     if (model.Id == Guid.Empty)
                         return View(model);
                     await _orderManagementService.UpdateOrderAsync(model.Id, model.ProductId, model.SaleQuantity, model.UnitPrice, model.TotalAmount, model.OrderType);
+
                     TempData["success"] = "Order updated successfully";
+                    _logger.LogInformation("Order update successfully....");
+
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    TempData["Error"] = "Failed to update order";
+                    _logger.LogInformation("Error occured in update order post action");
+                    _logger.LogError($"Error: {ex}");
                 }
             }
-            TempData["error"] = "Error occured";
+            TempData["Error"] = "Failed to update order";
+            _logger.LogInformation("Error occured for update order model validation failed..");
 
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> DeleteOrder(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var order = await _orderManagementService.GetOrderByIdAsync(id);
             if (order == null || id == Guid.Empty)
@@ -164,7 +185,7 @@ namespace Inventory.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteOrder(UpdateProductModel model)
+        public async Task<IActionResult> Delete(UpdateProductModel model)
         {
             try
             {
@@ -173,12 +194,20 @@ namespace Inventory.Presentation.Controllers
                     throw new Exception("Product not found");
 
                 await _orderManagementService.RemoveOrderAsync(order);
+
+                TempData["success"] = "Order deleted successfully";
+                _logger.LogInformation("Order deleted successfully....");
+
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                TempData["Error"] = "Failed to delete order";
+                _logger.LogInformation("Error occured in delete order post action");
+                _logger.LogError($"Error: {ex}");
             }
+            TempData["Error"] = "Failed to delete order";
+            _logger.LogInformation("Error occured for delete order model validation failed..");
             return RedirectToAction("Index");
         }
 

@@ -4,18 +4,20 @@
     var selectedCategory = ViewBag.SelectedCategory;
 }
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Update product";
 }
+<div class="container p-4 pt-0 mt-1 border border-2 border-dark">
+
 
 <form asp-action="Update" asp-controller="Product" method="post" asp-antiforgery="true">
     <br />
 
-    <div class="container p-3">
+    <div class=" p-3">
         <h1>Update a product</h1>
         <hr />
     </div>
 
-    <div class="row p-4 border border-2 border-dark">
+    <div class="row p-4 border ">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input asp-for="Id" hidden />
 
@@ -70,6 +72,8 @@
 
     </div>
 </form>
+
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

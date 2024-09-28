@@ -13,15 +13,18 @@ namespace Inventory.Presentation.Controllers
     [Authorize]
     public class ProductController : Controller
     {
+        private readonly ILogger<ProductController> _logger;
         private readonly IProductManagementService _productManagementService;
-        public ProductController(IProductManagementService productManagementService)
+        public ProductController(ILogger<ProductController> logger, IProductManagementService productManagementService)
         {
+            _logger = logger;
             _productManagementService = productManagementService;
         }
 
         public async Task<IActionResult> AllProducts()
         {
             var products = await _productManagementService.GetAllProducts();
+            _logger.LogInformation("Product controller all product action loaded");
             return View(products);
         }
 
@@ -30,13 +33,17 @@ namespace Inventory.Presentation.Controllers
             var product = await _productManagementService.GetProductByIdAsync(id);
             if (product == null)
                 throw new Exception("Product not found");
+
+            _logger.LogInformation("Single product detail view page loaded");
+
             return View(product);
         }
-        
+
 
         public async Task<IActionResult> Index()
         {
             var products = await _productManagementService.GetAllProducts();
+            _logger.LogInformation("Product controller Index loaded");
             return View(products);
         }
 
@@ -51,6 +58,8 @@ namespace Inventory.Presentation.Controllers
                 Value = i.Id.ToString()
             });
 
+            _logger.LogInformation("Product Create view page loaded");
+
             return View();
         }
 
@@ -64,18 +73,23 @@ namespace Inventory.Presentation.Controllers
                 {
                     if (model.Name == null)
                         return View(model);
-                    await _productManagementService.CreateProductAsync(model.Name, model.Description, model.BuyingPrice,model.MinimumSellingPrice, model.QuantityInStock, model.CategoryId);
+                    await _productManagementService.CreateProductAsync(model.Name, model.Description, model.BuyingPrice, model.MinimumSellingPrice, model.QuantityInStock, model.CategoryId);
 
-                    TempData["success"] = "product created successfully";
+                    TempData["Success"] = "Product created successfully";
+                    _logger.LogInformation("New product created....");
+
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    TempData["Error"] = "Failed to create product";
+                    _logger.LogInformation("Error occured in create product post action");
+                    _logger.LogError($"Error: {ex}");
                 }
             }
-            TempData["error"] = "Error occured";
 
+            _logger.LogInformation("Error occured for create product model validation failed..");
+            TempData["Error"] = "Failed to create product";
             return View(model);
         }
 
@@ -107,6 +121,9 @@ namespace Inventory.Presentation.Controllers
                 Text = product.Category.Name,
                 Value = product.Category.Id.ToString()
             };
+
+            _logger.LogInformation("Product update view page loaded...");
+
             return View(model);
         }
 
@@ -120,16 +137,22 @@ namespace Inventory.Presentation.Controllers
                 {
                     if (model.Name == null)
                         return View(model);
-                    await _productManagementService.UpdateProductAsync(model.Id, model.Name, model.Description, model.BuyingPrice,model.MinimumSellingPrice, model.QuantityInStock, model.CategoryId);
-                    TempData["success"] = "Category updated successfully";
+                    await _productManagementService.UpdateProductAsync(model.Id, model.Name, model.Description, model.BuyingPrice, model.MinimumSellingPrice, model.QuantityInStock, model.CategoryId);
+
+                    TempData["success"] = "Product updated successfully";
+                    _logger.LogInformation("Product update successfully....");
+
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    TempData["Error"] = "Failed to update product";
+                    _logger.LogInformation("Error occured in update product post action");
+                    _logger.LogError($"Error: {ex}");
                 }
             }
-            TempData["error"] = "Error occured";
+            TempData["Error"] = "Failed to update product";
+            _logger.LogInformation("Error occured for update product model validation failed..");
 
             return View(model);
         }
@@ -149,6 +172,8 @@ namespace Inventory.Presentation.Controllers
             model.CategoryId = product.Id;
             ViewBag.SelectedCategoryName = product.Category.Name;
 
+            _logger.LogInformation("Product delete view page loaded...");
+
             return View(model);
         }
 
@@ -162,12 +187,21 @@ namespace Inventory.Presentation.Controllers
                     throw new Exception("Product not found");
 
                 await _productManagementService.RemoveProductAsync(product);
+                TempData["success"] = "Product deleted successfully";
+                _logger.LogInformation("Product deleted successfully....");
+
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                TempData["Error"] = "Failed to delete product";
+                _logger.LogInformation("Error occured in delete product post action");
+                _logger.LogError($"Error: {ex}");
             }
+
+            TempData["Error"] = "Failed to delete product";
+            _logger.LogInformation("Error occured for delete product model validation failed..");
+
             return View();
         }
     }

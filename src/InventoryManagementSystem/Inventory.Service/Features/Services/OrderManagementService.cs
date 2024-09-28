@@ -64,29 +64,29 @@ namespace Inventory.Service.Features.Services
 
                
 
-                if (orderType == OrderType.Purchase.ToString())
-                {
-                    product.QuantityInStock += totoalQuantity;
+                //if (orderType == OrderType.Purchase.ToString())
+                //{
+                //    product.QuantityInStock += totoalQuantity;
 
-                    if(product.MinimumSellingPrice < unitPrice)
-                        product.MinimumSellingPrice = unitPrice;
+                //    if(product.MinimumSellingPrice < unitPrice)
+                //        product.MinimumSellingPrice = unitPrice;
 
-                    await _unitOfWork.Product.UpdateAsync(product);
+                //    await _unitOfWork.Product.UpdateAsync(product);
 
-                }
+                //}
 
-                if (orderType == OrderType.Sale.ToString())
-                {
-                    if(product.QuantityInStock > totoalQuantity)
-                        throw new Exception("Not enough product.");
+                //if (orderType == OrderType.Sale.ToString())
+                //{
+                //    if(product.QuantityInStock > totoalQuantity)
+                //        throw new Exception("Not enough product.");
 
-                    if (product.MinimumSellingPrice <= unitPrice)
-                        throw new Exception("Unit price must be equal or more than minimum price.");
+                //    if (product.MinimumSellingPrice <= unitPrice)
+                //        throw new Exception("Unit price must be equal or more than minimum price.");
 
-                    product.QuantityInStock -= totoalQuantity;
+                //    product.QuantityInStock -= totoalQuantity;
 
-                    await _unitOfWork.Product.UpdateAsync(product);
-                }
+                //    await _unitOfWork.Product.UpdateAsync(product);
+                //}
 
                 var order = new Order
                 {

@@ -31,21 +31,21 @@ namespace Inventory.Presentation.Controllers
         {
             var model = new HomeIndexVM();
 
-            var totalCategoriesCount = await _categoryManagementService.GetAllCategoryCount();
-            var totalProductStockCount = await _productManagementService.GetAllStockProductCount();
-            var totalPurchaseOrderCount = await _orderManagementService.GetAllPurchaseOrderCount();
-            var totalSaleOrderCount = await _orderManagementService.GetAllSaleOrderCount();
+            //var totalCategoriesCount = await _categoryManagementService.GetAllCategoryCount();
+            //var totalProductStockCount = await _productManagementService.GetAllStockProductCount();
+            //var totalPurchaseOrderCount = await _orderManagementService.GetAllPurchaseOrderCount();
+            //var totalSaleOrderCount = await _orderManagementService.GetAllSaleOrderCount();
 
-            var totalPurchaseOrderToday = await _orderManagementService.GetAllPurchaseOrderCount(x=>x.CreatedDate == DateTime.Today);
-            var totalSaleOrderToday = await _orderManagementService.GetAllSaleOrderCount(x => x.CreatedDate == DateTime.Today);
+            //var totalPurchaseOrderToday = await _orderManagementService.GetAllPurchaseOrderCount(x=>x.CreatedDate == DateTime.Today);
+            //var totalSaleOrderToday = await _orderManagementService.GetAllSaleOrderCount(x => x.CreatedDate == DateTime.Today);
 
-            model.TotalCategories = totalCategoriesCount;
-            model.TotalProducts = totalProductStockCount;
-            model.TotalPurchaseOrders = totalPurchaseOrderCount;
-            model.TotalSaleOrders = totalSaleOrderCount;
+            //model.TotalCategories = totalCategoriesCount;
+            //model.TotalProducts = totalProductStockCount;
+            //model.TotalPurchaseOrders = totalPurchaseOrderCount;
+            //model.TotalSaleOrders = totalSaleOrderCount;
 
-            model.TodayPurchaseOrders = totalPurchaseOrderToday;
-            model.TodaySaleOrders = totalSaleOrderToday;
+            //model.TodayPurchaseOrders = totalPurchaseOrderToday;
+            //model.TodaySaleOrders = totalSaleOrderToday;
        
             return View(model);
         }

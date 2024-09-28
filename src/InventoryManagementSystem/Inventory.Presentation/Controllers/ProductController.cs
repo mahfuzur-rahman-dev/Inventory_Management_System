@@ -73,7 +73,7 @@ namespace Inventory.Presentation.Controllers
                 {
                     if (model.Name == null)
                         return View(model);
-                    await _productManagementService.CreateProductAsync(model.Name, model.Description, model.BuyingPrice, model.MinimumSellingPrice, model.QuantityInStock, model.CategoryId);
+                    await _productManagementService.CreateProductAsync(model.Name, model.Description, model.CategoryId);
 
                     TempData["Success"] = "Product created successfully";
                     _logger.LogInformation("New product created....");
@@ -101,12 +101,10 @@ namespace Inventory.Presentation.Controllers
                 throw new Exception("Product not found");
 
             var model = new UpdateProductModel();
+            model.Id = product.Id;
             model.Description = product.Description;
             model.Name = product.Name;
-            model.BuyingPrice = product.BuyingPrice;
-            model.MinimumSellingPrice = product.MinimumSellingPrice;
-            model.QuantityInStock = product.QuantityInStock;
-            model.CategoryId = product.Id;
+            model.CategoryId = product.CategoryId;
 
             var categories = await _productManagementService.GetAllCategoryNameAsync();
 
@@ -137,7 +135,7 @@ namespace Inventory.Presentation.Controllers
                 {
                     if (model.Name == null)
                         return View(model);
-                    await _productManagementService.UpdateProductAsync(model.Id, model.Name, model.Description, model.BuyingPrice, model.MinimumSellingPrice, model.QuantityInStock, model.CategoryId);
+                    await _productManagementService.UpdateProductAsync(model.Id, model.Name, model.Description,model.CategoryId);
 
                     TempData["success"] = "Product updated successfully";
                     _logger.LogInformation("Product update successfully....");
@@ -166,10 +164,8 @@ namespace Inventory.Presentation.Controllers
             var model = new UpdateProductModel();
             model.Description = product.Description;
             model.Name = product.Name;
-            model.BuyingPrice = product.BuyingPrice;
-            model.MinimumSellingPrice = product.MinimumSellingPrice;
-            model.QuantityInStock = product.QuantityInStock;
             model.CategoryId = product.Id;
+
             ViewBag.SelectedCategoryName = product.Category.Name;
 
             _logger.LogInformation("Product delete view page loaded...");

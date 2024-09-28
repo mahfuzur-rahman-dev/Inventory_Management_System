@@ -11,9 +11,9 @@ namespace Inventory.Service.Features.Services.IServices
     {
         Task<IEnumerable<Product>> GetAllProducts();
         Task<Product> GetProductByIdAsync(Guid id);
-        Task CreateProductAsync(string name, string description, decimal buyingPrice, decimal sellingPrice, int quantity, Guid categoryId);
+        Task CreateProductAsync(string name, string description, Guid categoryId);
         Task RemoveProductAsync(Product category);
-        Task UpdateProductAsync(Guid id, string name, string description, decimal buyingPrice, decimal sellingPrice, int quantity, Guid? categoryId);
+        Task UpdateProductAsync(Guid id, string name, string description, Guid categoryId);
         Task<IEnumerable<Category>> GetAllCategoryNameAsync();
         Task<int> GetAllStockProductCount();
     }

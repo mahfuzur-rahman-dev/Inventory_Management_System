@@ -25,19 +25,16 @@ namespace Inventory.Service.Features.Services
         }
 
 
-        public async Task CreateProductAsync(string name, string description, decimal buyingPrice, decimal sellingPrice, int quantity, Guid categoryId)
+        public async Task CreateProductAsync(string name, string description, Guid categoryId)
         {
             if (await CheckDuplicateName(name))
                 throw new InvalidOperationException("A product with this name already exists.");
 
             var product = new Product
-            { 
+            {
                 Name = name,
                 Description = description,
-                BuyingPrice = buyingPrice,
-                MinimumSellingPrice = sellingPrice,
-                QuantityInStock = quantity,
-                CategoryId = categoryId
+                CategoryId = categoryId,
             };
             await _unitOfWork.Product.CreateAsync(product);
         }
@@ -67,24 +64,19 @@ namespace Inventory.Service.Features.Services
             await _unitOfWork.Product.RemoveAsync(product);
         }
 
-        public async Task UpdateProductAsync(Guid id,string name, string description, decimal buyingPrice, decimal sellingPrice, int quantity, Guid? categoryId)
+        public async Task UpdateProductAsync(Guid id,string name, string description, Guid categoryId)
         {
 
             var product = await GetProductByIdAsync(id);
             if (product == null)
                 throw new Exception("Product not found");
 
-
             product.Description = description;
             product.Name = name;
-            product.BuyingPrice = buyingPrice;
-            product.MinimumSellingPrice = sellingPrice;
-            product.QuantityInStock = quantity;
+            product.CategoryId = categoryId;
+            product.UpdatedAt = DateTime.Now;
 
-            if(categoryId != null)
-                product.CategoryId = (Guid)categoryId;
             await _unitOfWork.Product.UpdateAsync(product);
-
         }
 
         public async Task<int> GetAllStockProductCount()

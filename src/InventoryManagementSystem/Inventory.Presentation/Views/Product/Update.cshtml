@@ -19,6 +19,7 @@
 
     <div class="row p-4 border ">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
         <input asp-for="Id" hidden />
 
         <div class="form-group">
@@ -34,19 +35,7 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="BuyingPrice" class="control-label"></label>
-            <input asp-for="BuyingPrice" placeholder="Enter product price" class="form-control" required />
-            <span asp-validation-for="BuyingPrice" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="MinimumSellingPrice" class="control-label"></label>
-            <input asp-for="MinimumSellingPrice" placeholder="Enter product price" class="form-control" required />
-            <span asp-validation-for="MinimumSellingPrice" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="CategoryId" class="control-label">Category</label>
+            <label asp-for="CategoryId" class="control-label">Product category</label>
             <select asp-for="CategoryId"  class="form-select">
                 <option value="@selectedCategory.Value" selected >@selectedCategory.Text</option>
                 @foreach (var category in CategoryNames)
@@ -55,13 +44,6 @@
                 }
             </select>
             <span asp-validation-for="CategoryId" class="text-danger"></span>
-        </div>
-      
-
-        <div class="form-group">
-            <label asp-for="QuantityInStock" class="control-label"></label>
-            <input asp-for="QuantityInStock" placeholder="Enter stock" class="form-control" required />
-            <span asp-validation-for="QuantityInStock" class="text-danger"></span>
         </div>
 
         <div class="form-group d-flex justify-content-left mt-3">

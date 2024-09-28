@@ -1,11 +1,13 @@
 using Inventory.Presentation.Models;
 using Inventory.Presentation.Models.VM;
 using Inventory.Service.Features.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace Inventory.Presentation.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

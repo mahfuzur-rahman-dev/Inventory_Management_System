@@ -3,12 +3,14 @@ using Inventory.DataAccess.Enums;
 using Inventory.Presentation.Models;
 using Inventory.Service.Features.Services;
 using Inventory.Service.Features.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 
 namespace Inventory.Presentation.Controllers
 {
+    [Authorize]
     public class OrderController : Controller
     {
 
@@ -17,24 +19,7 @@ namespace Inventory.Presentation.Controllers
         {
             _orderManagementService = orderManagementService;
         }
-
-        [HttpPost]
-        public async Task<IActionResult> PlaceOrder(int totalQuantity, Guid productId, string orderType)
-        {
-            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            try
-            {
-                //await _orderManagementService.CreateOrderAsync(userId,TotalQuantity, dtoTotalAmount);
-
-                return Json(new { success = true, message = "Order placed successfully!" });
-            }
-            catch (Exception ex)
-            {
-                // Log exception and return an error response
-                return Json(new { success = false, message = "An error occurred while placing the order: " + ex.Message });
-            }
-        }
+     
 
         public async Task<IActionResult> Index()
         {
@@ -88,6 +73,7 @@ namespace Inventory.Presentation.Controllers
                     var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                     await _orderManagementService.CreateOrderAsync(userId, model.ProductId, model.SaleQuantity, model.UnitPrice, model.TotalAmount, model.OrderType);
+                    return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
@@ -96,10 +82,6 @@ namespace Inventory.Presentation.Controllers
             }
             return View(model);
         }
-
-
-
-
 
 
 

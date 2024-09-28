@@ -3,11 +3,13 @@ using Inventory.DataAccess.Enums;
 using Inventory.Presentation.Models;
 using Inventory.Presentation.Models.VM;
 using Inventory.Service.Features.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Inventory.Presentation.Controllers
 {
+    [Authorize]
     public class ReportController : Controller
     {
         private readonly IOrderManagementService _orderManagementService;

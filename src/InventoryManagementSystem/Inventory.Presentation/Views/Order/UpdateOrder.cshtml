@@ -3,7 +3,7 @@
 @{
     var products = ViewBag.Products;
     var orderTypes = ViewBag.OrderTypes;
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Update order";
 }
 <div class="container  border border-2 border-dark">
 
@@ -48,7 +48,7 @@
             <!-- Unit Price Input -->
             <div class="form-group">
                 <label asp-for="UnitPrice" class="control-label"></label>
-                <input asp-for="UnitPrice" id="unitPrice" placeholder="Enter unit price" onchange="calculateTotal()"  class="form-control" />
+                <input asp-for="UnitPrice" id="unitPrice" placeholder="Enter unit price" onchange="calculateTotal()" class="form-control" />
                 <span asp-validation-for="UnitPrice" class="text-danger"></span>
             </div>
 
@@ -70,7 +70,7 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-       
+
 
         function calculateTotal() {
             var quantity = parseFloat($('#saleQuantity').val());
@@ -88,7 +88,7 @@
                 $('#totalAmount').val(total.toFixed(2));
             }
 
-            
+
         }
     </script>
 }

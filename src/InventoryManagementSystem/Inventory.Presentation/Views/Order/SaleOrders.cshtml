@@ -37,8 +37,8 @@
                             <td>@data.TotalQuantity</td>
                             <td>@data.TotalAmount</td>
                             <td>
-                                <a asp-controller="Order" asp-action="Update" asp-route-id="@data.Id" class="btn btn-info w-25"><i class="bi bi-pencil-square"></i></a>
-                                <a asp-controller="Order" asp-action="Delete" asp-route-id="@data.Id" class="btn btn-danger w-25"><i class="bi bi-trash"></i> </a>
+                                <a asp-controller="Order" asp-action="UpdateOrder" asp-route-id="@data.Id" class="btn btn-info w-25"><i class="bi bi-pencil-square"></i></a>
+                                <a asp-controller="Order" asp-action="DeleteOrder" asp-route-id="@data.Id" class="btn btn-danger w-25"><i class="bi bi-trash"></i> </a>
                             </td>
                         </tr>
                     

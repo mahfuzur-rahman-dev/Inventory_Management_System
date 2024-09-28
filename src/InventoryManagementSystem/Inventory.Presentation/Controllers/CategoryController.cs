@@ -2,10 +2,12 @@
 using Inventory.Presentation.Models;
 using Inventory.Presentation.Models.VM;
 using Inventory.Service.Features.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.Presentation.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
         private readonly ICategoryManagementService _categoryManagementService;

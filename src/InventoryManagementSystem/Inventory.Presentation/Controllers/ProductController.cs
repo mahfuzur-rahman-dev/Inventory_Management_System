@@ -4,11 +4,13 @@ using Inventory.Presentation.Models;
 using Inventory.Presentation.Models.VM;
 using Inventory.Service.Features.Services;
 using Inventory.Service.Features.Services.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Inventory.Presentation.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IProductManagementService _productManagementService;

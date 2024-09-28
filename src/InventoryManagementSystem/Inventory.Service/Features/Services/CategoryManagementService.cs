@@ -68,5 +68,11 @@ namespace Inventory.Service.Features.Services
             await _unitOfWork.Category.UpdateAsync(category);
 
         }
+
+        public async Task<int> GetAllCategoryCount()
+        {
+            var categories  = await _unitOfWork.Category.GetAllAsync();
+            return categories.Count;
+        }
     }
 }

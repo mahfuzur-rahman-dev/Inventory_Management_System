@@ -20,5 +20,7 @@ namespace Inventory.Service.Features.Services.IServices
         Task<IEnumerable<Order>> GetAllSaleOrder(Expression<Func<Order, bool>> filter = null);
         Task<IEnumerable<Order>> GetAllPurchaseOrder(Expression<Func<Order, bool>> filter = null);
         Task<IEnumerable<Order>> GetOrdersByDateRangeAndType(DateTime searchFrom, DateTime searchTo, string orderType);
+        Task<int> GetAllPurchaseOrderCount(Expression<Func<Order, bool>> filter = null);
+        Task<int> GetAllSaleOrderCount(Expression<Func<Order, bool>> filter = null);
     }
 }

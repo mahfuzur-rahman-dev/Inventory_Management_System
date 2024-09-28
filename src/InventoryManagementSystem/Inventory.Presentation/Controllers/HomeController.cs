@@ -1,4 +1,6 @@
 using Inventory.Presentation.Models;
+using Inventory.Presentation.Models.VM;
+using Inventory.Service.Features.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,15 +9,43 @@ namespace Inventory.Presentation.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IProductManagementService _productManagementService;
+        private readonly ICategoryManagementService _categoryManagementService;
+        private readonly IOrderManagementService _orderManagementService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(
+            ILogger<HomeController> logger,
+            IProductManagementService productManagementService,
+            ICategoryManagementService categoryManagementService,
+            IOrderManagementService orderManagementService)
         {
             _logger = logger;
+            _productManagementService = productManagementService;
+            _categoryManagementService = categoryManagementService;
+            _orderManagementService = orderManagementService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var model = new HomeIndexVM();
+
+            var totalCategoriesCount = await _categoryManagementService.GetAllCategoryCount();
+            var totalProductStockCount = await _productManagementService.GetAllStockProductCount();
+            var totalPurchaseOrderCount = await _orderManagementService.GetAllPurchaseOrderCount();
+            var totalSaleOrderCount = await _orderManagementService.GetAllSaleOrderCount();
+
+            var totalPurchaseOrderToday = await _orderManagementService.GetAllPurchaseOrderCount(x=>x.CreatedDate == DateTime.Today);
+            var totalSaleOrderToday = await _orderManagementService.GetAllSaleOrderCount(x => x.CreatedDate == DateTime.Today);
+
+            model.TotalCategories = totalCategoriesCount;
+            model.TotalProducts = totalProductStockCount;
+            model.TotalPurchaseOrders = totalPurchaseOrderCount;
+            model.TotalSaleOrders = totalSaleOrderCount;
+
+            model.TodayPurchaseOrders = totalPurchaseOrderToday;
+            model.TodaySaleOrders = totalSaleOrderToday;
+       
+            return View(model);
         }
 
         public IActionResult Privacy()

@@ -136,5 +136,34 @@ namespace Inventory.Service.Features.Services
                 Console.WriteLine(ex.Message);
             }
         }
+
+        public async Task<int> GetAllPurchaseOrderCount(Expression<Func<Order, bool>> filter = null)
+        {
+            var orders = await GetAllPurchaseOrder();
+
+            
+
+            if(filter != null)
+            {
+                IQueryable<Order> queryableOrders = orders.AsQueryable();
+                queryableOrders = queryableOrders.Where(filter);
+                return queryableOrders.Count();
+            }
+            return orders.Count();
+        }
+
+        public async Task<int> GetAllSaleOrderCount(Expression<Func<Order, bool>> filter = null)
+        {
+            var orders = await GetAllSaleOrder();
+
+
+            if (filter != null)
+            {
+                IQueryable<Order> queryableOrders = orders.AsQueryable();
+                queryableOrders = queryableOrders.Where(filter);
+                return queryableOrders.Count();
+            }
+            return orders.Count();
+        }
     }
 }

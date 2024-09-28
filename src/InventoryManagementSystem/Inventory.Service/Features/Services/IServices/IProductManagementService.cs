@@ -15,5 +15,6 @@ namespace Inventory.Service.Features.Services.IServices
         Task RemoveProductAsync(Product category);
         Task UpdateProductAsync(Guid id, string name, string description, decimal buyingPrice, decimal sellingPrice, int quantity, Guid? categoryId);
         Task<IEnumerable<Category>> GetAllCategoryNameAsync();
+        Task<int> GetAllStockProductCount();
     }
 }

@@ -14,5 +14,6 @@ namespace Inventory.Service.Features.Services.IServices
         Task CreateCategory(string name, string description);
         Task RemoveCategoryAsync(Category category);
         Task UpdateCategoryAsync(Guid id, string name, string description);
+        Task<int> GetAllCategoryCount();
     }
 }

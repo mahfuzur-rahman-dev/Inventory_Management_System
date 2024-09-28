@@ -13,29 +13,59 @@
         </div>
     </div>
 
-    <table class="table">
+
+
+    <table id="dataTable" class="table table-bordered">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Action</th>
+                <th class="text-center" >Serial no.</th>
+                <th class="text-center">Name</th>
+                <th class="text-center" >Description</th>
+                <th class="text-center">Action</th>
             </tr>
         </thead>
-
         <tbody>
             @{
+                var serialNo = 1;
                 foreach (var data in Model)
                 {
                     <tr>
-                        <td>@data.Name</td>
-                        <td>@data.Description</td>
-                        <td>
-                            <a asp-controller="Category" asp-action="Update" asp-route-id="@data.Id" class="btn btn-info w-25"><i class="bi bi-pencil-square"></i></a>
-                            <a asp-controller="Category" asp-action="Delete" asp-route-id="@data.Id" class="btn btn-danger w-25"><i class="bi bi-trash"></i> </a>
+                        <td class="text-center">@serialNo</td>
+                        <td class="text-center">@data.Name</td>
+                        <td class="text-center text-truncate" style="max-width: 250px;">@data.Description</td> 
+                        <td class="text-center">
+                            <a asp-controller="Category" asp-action="Update" asp-route-id="@data.Id" class="btn btn-info btn-sm"><i class="bi bi-pencil-square"></i></a>
+                            <a asp-controller="Category" asp-action="Delete" asp-route-id="@data.Id" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
                         </td>
                     </tr>
+
+                    serialNo++;
                 }
             }
         </tbody>
     </table>
 </div>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable({
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "searching": true,
+                "columnDefs": [
+                    { "width": "10%", "targets": 0 },  
+                    { "width": "40%", "targets": 2 }, 
+                    { "width": "20%", "targets": 3 } 
+                ]
+            });
+        });
+    </script>
+
+
+}
+
+
+

@@ -1,0 +1,150 @@
+﻿
+
+<div class="container p-4 border">
+    <div class="row pb-2">
+        <div class="col">
+            <h1 class="text-primary">Purchase report</h1>
+        </div>
+        <div class="col text-end pt-1">
+            <a asp-controller="Order" asp-action="PurchaseOrders" class="btn btn-outline-primary">View purchase orders</a>
+        </div>
+    </div>
+
+    <hr />
+    <br />
+    <br />
+
+    <h5>Generate report</h5>
+
+    <div class="row">
+        <div class="row">
+            <!-- From field -->
+            <div class="col-md-4 col-12">
+                <div class="form-group">
+                    <label class="control-label">From</label>
+                    <input id="searchFrom" type="date" placeholder="Select a start date" class="form-control" required />
+                </div>
+            </div>
+
+            <!-- To field -->
+            <div class="col-md-4 col-12">
+                <div class="form-group">
+                    <label class="control-label">To</label>
+                    <input id="searchTo" type="date" placeholder="Select an end date" class="form-control" required />
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-md-4 col-12 d-flex align-items-end">
+                <button type="button" id="generateReportBtn" class="btn btn-primary w-100">Generate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Table (Hidden Initially) -->
+    <div id="reportSection" class="mt-4" style="display:none;">
+        <h4 class="mb-3">Purchase Report</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Order Date</th>
+                    <th>Product Name</th>
+                    <th>Buying Price</th>
+                    <th>Selling Price</th>
+                    <th>Total Quantity</th>
+                    <th>Total Amount</th>
+                </tr>
+            </thead>
+            <tbody id="reportTableBody">
+                <!-- Dynamic rows will be added here -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="5" class="text-end">Total Amount</th>
+                    <th id="totalAmount"></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    @* <partial name="_ValidationScriptsPartial" /> *@
+    <script>
+        $(document).ready(function () {
+            // Generate report button click event
+            $('#generateReportBtn').on('click', function () {
+                var searchFrom = $('#searchFrom').val();
+                var searchTo = $('#searchTo').val();
+
+                // Validate that the input fields are not null
+                if (!searchFrom || !searchTo) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Both From and To dates are required!',
+                    });
+                    return;
+                }
+
+                console.log({
+                    searchFrom: searchFrom,
+                    searchTo: searchTo
+                }); // Debugging output
+
+                // Send AJAX request if validation is successful
+                $.ajax({
+                    url: '@Url.Action("PurchaseReport", "Report")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        searchFrom: searchFrom,
+                        searchTo: searchTo
+                    }),
+                    success: function (response) {
+                        // Clear existing table rows
+                        $('#reportTableBody').empty();
+                        var totalAmountSum = 0;
+
+                        // Loop through the orders in the response and build the table rows
+                        response.forEach(function (order) {
+                            var orderTotalAmount = order.TotalQuantity * order.UnitPrice;
+                            totalAmountSum += orderTotalAmount;
+
+                            var row = `
+                                                <tr>
+                                                    <td>${new Date(order.CreatedDate).toLocaleDateString()}</td>
+                                                    <td>${order.Product.Name}</td>
+                                                    <td>${order.BuyingPrice.toFixed(2)}</td>
+                                                    <td>${order.SellingPrice.toFixed(2)}</td>
+                                                    <td>${order.TotalQuantity}</td>
+                                                    <td>${orderTotalAmount.toFixed(2)}</td>
+                                                </tr>`;
+                            $('#reportTableBody').append(row);
+                        });
+
+                        // Set the total amount in the footer
+                        $('#totalAmount').text(totalAmountSum.toFixed(2));
+
+                        // Show the report section
+                        $('#reportSection').show();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Report generated!',
+                            text: 'Your report has been generated successfully.',
+                        });
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'An error occurred while generating the report. Please try again.',
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}
+

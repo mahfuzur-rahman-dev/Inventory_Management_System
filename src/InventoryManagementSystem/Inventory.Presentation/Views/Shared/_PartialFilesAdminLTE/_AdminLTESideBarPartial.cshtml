@@ -86,7 +86,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a asp-controller="Order" asp-action="Orders" class="nav-link">
+                            <a asp-controller="Order" asp-action="Index" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
                                 <p>View all order</p>
                             </a>
@@ -103,6 +103,34 @@
                                 <p>View purchase order</p>
                             </a>
                         </li>
+                    </ul>
+                </li>
+
+
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        <p>
+                            Report
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a asp-controller="Report" asp-action="PurchaseReport" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Purchase report</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a asp-controller="Report" asp-action="SaleReport" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Sale report</p>
+                            </a>
+                        </li>
+                        
                     </ul>
                 </li>
 

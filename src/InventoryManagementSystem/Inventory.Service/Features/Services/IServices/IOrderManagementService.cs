@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,7 +17,8 @@ namespace Inventory.Service.Features.Services.IServices
         Task RemoveOrderAsync(Order category);
         Task<IEnumerable<Order>> GetOrderByUserIdAsync(Guid userId);
         Task<IEnumerable<Product>> GetAllProductNameAsync();
-        Task<IEnumerable<Order>> GetAllSaleOrder();
-        Task<IEnumerable<Order>> GetAllPurchaseOrder();
+        Task<IEnumerable<Order>> GetAllSaleOrder(Expression<Func<Order, bool>> filter = null);
+        Task<IEnumerable<Order>> GetAllPurchaseOrder(Expression<Func<Order, bool>> filter = null);
+        Task<IEnumerable<Order>> GetOrdersByDateRangeAndType(DateTime searchFrom, DateTime searchTo, string orderType);
     }
 }

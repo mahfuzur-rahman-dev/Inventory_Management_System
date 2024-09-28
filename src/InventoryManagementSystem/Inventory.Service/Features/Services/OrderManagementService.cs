@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,15 +30,27 @@ namespace Inventory.Service.Features.Services
         }
 
 
-        public async Task<IEnumerable<Order>> GetAllSaleOrder()
+        public async Task<IEnumerable<Order>> GetAllSaleOrder(Expression<Func<Order, bool>> filter = null)
         {
             return await _unitOfWork.Order.GetAllAsync(x => x.OrderType == OrderType.Sale.ToString(), includeProperties: "Product");
 
         }
-
-        public async Task<IEnumerable<Order>> GetAllPurchaseOrder()
+        
+        public async Task<IEnumerable<Order>> GetAllPurchaseOrder(Expression<Func<Order, bool>> filter = null)
         {
-            return await _unitOfWork.Order.GetAllAsync(x=>x.OrderType == OrderType.Purchase.ToString(), includeProperties: "Product");
+            return await _unitOfWork.Order.GetAllAsync(x => x.OrderType == OrderType.Purchase.ToString(), includeProperties: "Product");
+
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersByDateRangeAndType(DateTime searchFrom, DateTime searchTo, string orderType)
+        {
+            var orders = await _unitOfWork.Order.GetAllAsync(x =>
+                x.OrderType == orderType &&
+                x.CreatedDate.Date >= searchFrom.Date &&
+                x.CreatedDate.Date <= searchTo.Date,
+                includeProperties: "Product");
+
+            return orders;
         }
 
         public async Task CreateOrderAsync(Guid userId, Guid productId, int totoalQuantity, decimal unitPrice, decimal totalAmount, string orderType)

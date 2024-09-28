@@ -1,0 +1,66 @@
+﻿@model ReportViewModel
+
+@{
+    var reportType = Model.ReportType == "Sale" ? "Sale" : "Purchase";
+}
+
+<div class="container p-4 border">
+    <div class="row pb-2">
+        <div class="col">
+            <h1 class="text-primary">@reportType report</h1>
+        </div>
+        <div class="col text-end pt-1">
+            <a asp-controller="Order" asp-action="$"{@reportType+Orders}"" class="btn btn-outline-primary">View @reportType orders</a>
+        </div>
+    </div>
+
+    <hr />
+    <br />
+
+
+    <h3 class="text-primary">
+        @reportType Report
+    </h3>
+
+    @if (Model.Reports != null && Model.Reports.Any())
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="text-center">Date</th>
+                    <th class="text-center">Product Name</th>
+                    <th class="text-center">Buying Price</th>
+                    <th class="text-center">Selling Price</th>
+                    <th class="text-center">Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Reports)
+                {
+                    <tr>
+                        <td class="text-center">@order.CreatedDate.ToString("MM/dd/yyyy")</td>
+                        <td class="text-center">@order.Product.Name</td>
+                        <td class="text-center">@order.Product.BuyingPrice.ToString("C")</td>
+                        <td class="text-center">@order.UnitPrice.ToString("C")</td>
+                        <td class="text-center">@order.TotalAmount.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                    <td class="text-center"><strong>@Model.Reports.Sum(order => order.TotalAmount).ToString("C")</strong></td>
+                </tr>
+            </tfoot>
+        </table>
+    }
+    else
+    {
+        <div>No records found for the specified date range.</div>
+    }
+
+
+</div>
+
+
+

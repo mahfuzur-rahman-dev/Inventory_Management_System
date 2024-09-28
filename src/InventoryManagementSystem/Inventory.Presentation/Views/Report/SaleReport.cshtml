@@ -3,19 +3,18 @@
 <div class="container p-4 border">
     <div class="row pb-2">
         <div class="col">
-            <h1 class="text-primary">Purchase report</h1>
+            <h1 class="text-primary">Sale report</h1>
         </div>
         <div class="col text-end pt-1">
-            <a asp-controller="Order" asp-action="PurchaseOrders" class="btn btn-outline-primary">View purchase orders</a>
+            <a asp-controller="Order" asp-action="SaleOrders" class="btn btn-outline-primary">View sale orders</a>
         </div>
     </div>
 
     <hr />
-    <br />
-    <br />
+
 
     <h5>Generate report</h5>
-    <form asp-action="PurchaseReport" asp-controller="Report" method="post" asp-antiforgery="true">
+    <form asp-action="SaleReport" asp-controller="Report" method="post" asp-antiforgery="true">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <div class="row">

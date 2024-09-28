@@ -1,7 +1,10 @@
-﻿using Inventory.DataAccess.Enums;
+﻿using Inventory.DataAccess.Entites;
+using Inventory.DataAccess.Enums;
 using Inventory.Presentation.Models;
+using Inventory.Presentation.Models.VM;
 using Inventory.Service.Features.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Inventory.Presentation.Controllers
 {
@@ -20,30 +23,33 @@ namespace Inventory.Presentation.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> PurchaseReport(string searchFrom, string searchTo)
+        public async Task<IActionResult> PurchaseReport(CreateReportModel model)
         {
-            if (string.IsNullOrEmpty(searchFrom) || string.IsNullOrEmpty(searchTo))
+
+            var viewModel = new ReportViewModel { CreateReportModel = model };
+
+            if (ModelState.IsValid)
             {
-                return BadRequest("Both dates are required.");
+                try
+                {
+                    var reports = await _orderManagementService.GetOrdersByDateRangeAndType(model.SearchFrom.Date, model.SearchTo.Date, OrderType.Purchase.ToString());
+                    viewModel.Reports = reports; // Assign reports to ViewModel
+                    viewModel.ReportType = OrderType.Purchase.ToString();
+                    return View("DisplayReport", viewModel); // Return to the same action or different one with ViewModel
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
-
-            // Parse the SearchFrom and SearchTo into DateTime objects
-            if (!DateTime.TryParse(searchFrom, out DateTime parsedFrom) ||
-                !DateTime.TryParse(searchTo, out DateTime parsedTo))
-            {
-                return BadRequest("Invalid date range.");
-            }
-
-            // Retrieve the reports based on the parsed dates
-            var reports = await _orderManagementService.GetOrdersByDateRangeAndType(parsedFrom, parsedTo, OrderType.Purchase.ToString());
-
-            // Return the reports as JSON for the AJAX call
-            return Json(reports);
+            return View(model);
         }
 
 
-
-
+        public IActionResult DisplayReports(ReportViewModel model)
+        {
+            return View(model); // Pass the ViewModel to the view
+        }
 
         public IActionResult SaleReport()
         {
@@ -52,9 +58,29 @@ namespace Inventory.Presentation.Controllers
 
 
         [HttpPost]
-        public IActionResult SaleReport(CreateReportModel model)
+        public async Task<IActionResult> SaleReport(CreateReportModel model)
         {
-            return View();
+
+            var viewModel = new ReportViewModel { CreateReportModel = model };
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var reports = await _orderManagementService.GetOrdersByDateRangeAndType(model.SearchFrom.Date, model.SearchTo.Date, OrderType.Sale.ToString());
+                    viewModel.Reports = reports; // Assign reports to ViewModel
+                    viewModel.ReportType = OrderType.Sale.ToString();
+                    return View("DisplayReport", viewModel); // Return to the same action or different one with ViewModel
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+            return View(model);
         }
+
+
+        
     }
 }

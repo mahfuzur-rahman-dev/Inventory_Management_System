@@ -5,8 +5,11 @@ namespace Inventory.Presentation.Models
 {
     public class CreateReportModel
     {
-        public string SearchFrom { get; set; }
-        public string SearchTo { get; set; }
+        [Required]
+        public DateTime SearchFrom { get; set; }
+        [Required]
+        public DateTime SearchTo { get; set; }
 
+        
     }
 }

@@ -9,5 +9,10 @@ namespace Inventory.Presentation.Models.VM
         public CreateReportModel CreateReportModel { get; set; }
         [ValidateNever]
         public string ReportType { get; set; }
+
+        [ValidateNever]
+        public DateTime SearchFrom { get; set; }
+        [ValidateNever]
+        public DateTime SearchTo { get; set; }
     }
 }

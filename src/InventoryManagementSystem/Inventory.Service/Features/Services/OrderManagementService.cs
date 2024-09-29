@@ -50,8 +50,23 @@ namespace Inventory.Service.Features.Services
                 x.CreatedDate.Date <= searchTo.Date,
                 includeProperties: "Product");
 
-            return orders;
+            var combinedOrders = orders
+                .GroupBy(o => new { o.UnitPrice, o.Product.Name })
+                .Select(g => new Order
+                {
+                    Product = g.First().Product,
+                    UnitPrice = g.Key.UnitPrice,
+                    TotalQuantity = g.Sum(o => o.TotalQuantity),
+                    CreatedDate = g.Min(o => o.CreatedDate),
+                    OrderType = orderType,
+                    TotalAmount = g.Key.UnitPrice * g.Sum(o => o.TotalQuantity)
+                })
+                .ToList();
+
+            return combinedOrders;
         }
+
+
 
         public async Task CreateOrderAsync(Guid userId, Guid productId, int totoalQuantity, decimal unitPrice, decimal totalAmount, string orderType)
         {
@@ -118,7 +133,7 @@ namespace Inventory.Service.Features.Services
             }
             else
             {
-                if(product != null && product.QuantityInStock < order.TotalQuantity)
+                if (product != null && product.QuantityInStock < order.TotalQuantity)
                 {
                     throw new Exception("Cannot edit this purchase order due to product shortage");
                 }
@@ -127,7 +142,7 @@ namespace Inventory.Service.Features.Services
                     product.QuantityInStock -= order.TotalQuantity;
                 }
             }
-            
+
 
             await _unitOfWork.Product.UpdateAsync(product);
 

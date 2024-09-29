@@ -1,4 +1,7 @@
 ﻿@model CreateReportModel;
+@{
+    ViewData["Title"] = "Sale report";
+}
 
 <div class="container p-4 border">
     <div class="row pb-2">
@@ -23,7 +26,7 @@
                 <div class="col-md-4 col-12">
                     <div class="form-group">
                         <label class="control-label">From</label>
-                        <input asp-for="SearchFrom" id="searchFrom"  placeholder="Select a start date" class="form-control" required />
+                        <input asp-for="SearchFrom" id="searchFrom" type="date"  placeholder="Select a start date" class="form-control" required />
                         <span asp-validation-for="SearchFrom" class="text-danger"></span>
 
                     </div>
@@ -33,7 +36,7 @@
                 <div class="col-md-4 col-12">
                     <div class="form-group">
                         <label asp-for="SearchTo" class="control-label">To</label>
-                        <input asp-for="SearchTo" id="searchTo"  placeholder="Select an end date" class="form-control" required />
+                        <input asp-for="SearchTo" id="searchTo" type="date" placeholder="Select an end date" class="form-control" required />
                         <span asp-validation-for="SearchTo" class="text-danger"></span>
 
                     </div>

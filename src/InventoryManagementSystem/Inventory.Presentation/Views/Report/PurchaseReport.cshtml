@@ -1,4 +1,7 @@
 ﻿@model CreateReportModel;
+@{
+    ViewData["Title"] = "Purchase report";
+}
 
 <div class="container p-4 border">
     <div class="row pb-2">
@@ -10,9 +13,8 @@
         </div>
     </div>
 
+
     <hr />
-    <br />
-    <br />
 
     <h5>Generate report</h5>
     <form asp-action="PurchaseReport" asp-controller="Report" method="post" asp-antiforgery="true">

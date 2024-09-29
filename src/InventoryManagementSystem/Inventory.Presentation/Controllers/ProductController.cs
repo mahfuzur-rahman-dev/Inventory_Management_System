@@ -30,13 +30,28 @@ namespace Inventory.Presentation.Controllers
 
         public async Task<IActionResult> Details(Guid id)
         {
-            var product = await _productManagementService.GetProductByIdAsync(id);
-            if (product == null)
-                throw new Exception("Product not found");
+            try
+            {
+                if (id == Guid.Empty)
+                    throw new Exception("Id is null");
 
-            _logger.LogInformation("Single product detail view page loaded");
+                var product = await _productManagementService.GetProductByIdAsync(id);
 
-            return View(product);
+                if (product == null)
+                    throw new Exception("Product not found");
+
+                _logger.LogInformation("Single product detail view page loaded");
+                return View(product);
+
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Failed to load product details";
+                _logger.LogInformation("Error occured in product details view action");
+                _logger.LogError($"Error: {ex}");
+                return RedirectToAction("Create");
+
+            }
         }
 
 
@@ -85,6 +100,7 @@ namespace Inventory.Presentation.Controllers
                     TempData["Error"] = "Failed to create product";
                     _logger.LogInformation("Error occured in create product post action");
                     _logger.LogError($"Error: {ex}");
+                    return View(model);
                 }
             }
 
@@ -96,33 +112,45 @@ namespace Inventory.Presentation.Controllers
 
         public async Task<IActionResult> Update(Guid id)
         {
-            var product = await _productManagementService.GetProductByIdAsync(id);
-            if (product == null)
-                throw new Exception("Product not found");
-
             var model = new UpdateProductModel();
-            model.Id = product.Id;
-            model.Description = product.Description;
-            model.Name = product.Name;
-            model.CategoryId = product.CategoryId;
 
-            var categories = await _productManagementService.GetAllCategoryNameAsync();
-
-            ViewBag.Categories = categories.Select(i => new SelectListItem
+            try
             {
-                Text = i.Name,
-                Value = i.Id.ToString()
-            });
+                var product = await _productManagementService.GetProductByIdAsync(id);
+                if (product == null)
+                    throw new Exception("Product not found");
 
-            ViewBag.SelectedCategory = new SelectListItem
+                model.Id = product.Id;
+                model.Description = product.Description;
+                model.Name = product.Name;
+                model.CategoryId = product.CategoryId;
+
+                var categories = await _productManagementService.GetAllCategoryNameAsync();
+
+                ViewBag.Categories = categories.Select(i => new SelectListItem
+                {
+                    Text = i.Name,
+                    Value = i.Id.ToString()
+                });
+
+                ViewBag.SelectedCategory = new SelectListItem
+                {
+                    Text = product.Category.Name,
+                    Value = product.Category.Id.ToString()
+                };
+
+                _logger.LogInformation("Product update view page loaded...");
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
             {
-                Text = product.Category.Name,
-                Value = product.Category.Id.ToString()
-            };
+                TempData["Error"] = "Failed to create product";
+                _logger.LogInformation("Error occured in create product post action");
+                _logger.LogError($"Error: {ex}");
+                return RedirectToAction("Update", new { id = model.Id });
 
-            _logger.LogInformation("Product update view page loaded...");
-
-            return View(model);
+            }
         }
 
         [HttpPost]
@@ -135,7 +163,7 @@ namespace Inventory.Presentation.Controllers
                 {
                     if (model.Name == null)
                         return View(model);
-                    await _productManagementService.UpdateProductAsync(model.Id, model.Name, model.Description,model.CategoryId);
+                    await _productManagementService.UpdateProductAsync(model.Id, model.Name, model.Description, model.CategoryId);
 
                     TempData["success"] = "Product updated successfully";
                     _logger.LogInformation("Product update successfully....");
@@ -147,6 +175,7 @@ namespace Inventory.Presentation.Controllers
                     TempData["Error"] = "Failed to update product";
                     _logger.LogInformation("Error occured in update product post action");
                     _logger.LogError($"Error: {ex}");
+                    return View(model);
                 }
             }
             TempData["Error"] = "Failed to update product";
@@ -157,48 +186,64 @@ namespace Inventory.Presentation.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            var product = await _productManagementService.GetProductByIdAsync(id);
-            if (product == null)
-                throw new Exception("Product not found");
-
             var model = new UpdateProductModel();
-            model.Description = product.Description;
-            model.Name = product.Name;
-            model.CategoryId = product.Id;
 
-            ViewBag.SelectedCategoryName = product.Category.Name;
+            try
+            {
+                var product = await _productManagementService.GetProductByIdAsync(id);
+                if (product == null)
+                    throw new Exception("Product not found");
 
-            _logger.LogInformation("Product delete view page loaded...");
+                model.Description = product.Description;
+                model.Name = product.Name;
+                model.CategoryId = product.Id;
 
-            return View(model);
+                ViewBag.SelectedCategoryName = product.Category.Name;
+
+                _logger.LogInformation("Product delete view page loaded...");
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Failed to load delete product view action";
+                _logger.LogInformation("Error occured in delete product post action");
+                _logger.LogError($"Error: {ex}");
+                return View(model);
+
+            }
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(UpdateProductModel model)
         {
-            try
+            if (ModelState.IsValid)
             {
-                var product = await _productManagementService.GetProductByIdAsync(model.Id);
-                if (product == null)
-                    throw new Exception("Product not found");
+                try
+                {
+                    var product = await _productManagementService.GetProductByIdAsync(model.Id);
+                    if (product == null)
+                        throw new Exception("Product not found");
 
-                await _productManagementService.RemoveProductAsync(product);
-                TempData["success"] = "Product deleted successfully";
-                _logger.LogInformation("Product deleted successfully....");
+                    await _productManagementService.RemoveProductAsync(product);
+                    TempData["success"] = "Product deleted successfully";
+                    _logger.LogInformation("Product deleted successfully....");
 
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "Failed to delete product";
-                _logger.LogInformation("Error occured in delete product post action");
-                _logger.LogError($"Error: {ex}");
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = "Failed to delete product";
+                    _logger.LogInformation("Error occured in delete product post action");
+                    _logger.LogError($"Error: {ex}");
+                    return RedirectToAction("Index");
+                }
             }
 
             TempData["Error"] = "Failed to delete product";
             _logger.LogInformation("Error occured for delete product model validation failed..");
 
-            return View();
+            return View(model);
         }
     }
 }

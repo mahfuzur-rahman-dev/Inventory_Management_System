@@ -38,7 +38,7 @@ namespace Inventory.Presentation.Controllers
             {
                 try
                 {
-                    if(model.Name == null)
+                    if (model.Name == null)
                         return View(model);
                     await _categoryManagementService.CreateCategory(model.Name, model.Description);
 
@@ -52,6 +52,7 @@ namespace Inventory.Presentation.Controllers
                     TempData["Error"] = "Failed to create category";
                     _logger.LogInformation("Error occured in create category post action");
                     _logger.LogError($"Error: {ex}");
+                    return RedirectToAction("Create");
                 }
             }
             _logger.LogInformation("Error occured for create category model validation failed..");
@@ -63,20 +64,32 @@ namespace Inventory.Presentation.Controllers
 
         public async Task<IActionResult> Update(Guid id)
         {
-            var category = await _categoryManagementService.GetCategoryIdAsync(id);
-            if (category == null)
-            {
-                throw new Exception("Category not found");
-            }
 
             var model = new UpdateCategoryModel();
-            model.Description = category.Description;
-            model.Name = category.Name;
-            model.Id = category.Id;
 
-            _logger.LogInformation("Category update view page loaded...");
+            try
+            {
+                var category = await _categoryManagementService.GetCategoryIdAsync(id);
+                if (category == null)
+                {
+                    throw new Exception("Category not found");
+                }
 
-            return View(model);
+                model.Description = category.Description;
+                model.Name = category.Name;
+                model.Id = category.Id;
+
+                _logger.LogInformation("Category update view page loaded...");
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Failed to update category";
+                _logger.LogInformation("Error occured in update product action");
+                _logger.LogError($"Error: {ex}");
+                return View(model);
+            }
         }
 
         [HttpPost]
@@ -101,6 +114,8 @@ namespace Inventory.Presentation.Controllers
                     TempData["Error"] = "Failed to update category";
                     _logger.LogInformation("Error occured in update category post action");
                     _logger.LogError($"Error: {ex}");
+
+                    return RedirectToAction("Index");
                 }
             }
             TempData["Error"] = "Failed to update category";
@@ -111,17 +126,22 @@ namespace Inventory.Presentation.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            var category = await _categoryManagementService.GetCategoryIdAsync(id);
-            if (category == null)
-                throw new Exception("Category not found");
-
             var model = new UpdateCategoryModel();
-            model.Description = category.Description;
-            model.Name = category.Name;
-            model.Id = category.Id;
+            if (ModelState.IsValid) {
+                var category = await _categoryManagementService.GetCategoryIdAsync(id);
+                if (category == null)
+                    throw new Exception("Category not found");
 
-            _logger.LogInformation("Category delete view page loaded...");
+                model.Description = category.Description;
+                model.Name = category.Name;
+                model.Id = category.Id;
 
+                _logger.LogInformation("Category delete view page loaded...");
+                return RedirectToAction("Index");
+
+            }
+            TempData["Error"] = "Failed to update category";
+            _logger.LogInformation("Error occured for update category model validation failed..");
 
             return View(model);
         }
@@ -149,6 +169,7 @@ namespace Inventory.Presentation.Controllers
                     TempData["Error"] = "Failed to delete category";
                     _logger.LogInformation("Error occured in delete category post action");
                     _logger.LogError($"Error: {ex}");
+                    return View(model);
                 }
             }
 

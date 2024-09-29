@@ -12,9 +12,11 @@ namespace Inventory.Presentation.Controllers
     [Authorize]
     public class ReportController : Controller
     {
+        private readonly ILogger<ReportController> _logger;
         private readonly IOrderManagementService _orderManagementService;
-        public ReportController(IOrderManagementService orderManagementService)
+        public ReportController(ILogger<ReportController> logger, IOrderManagementService orderManagementService)
         {
+            _logger = logger;
             _orderManagementService = orderManagementService;
         }
 
@@ -35,23 +37,33 @@ namespace Inventory.Presentation.Controllers
                 try
                 {
                     var reports = await _orderManagementService.GetOrdersByDateRangeAndType(model.SearchFrom.Date, model.SearchTo.Date, OrderType.Purchase.ToString());
-                    viewModel.Reports = reports; // Assign reports to ViewModel
+                    viewModel.Reports = reports; 
                     viewModel.ReportType = OrderType.Purchase.ToString();
                     viewModel.SearchFrom = model.SearchFrom;
                     viewModel.SearchTo = model.SearchTo;
-                    return View("DisplayReport", viewModel); // Return to the same action or different one with ViewModel
+                    _logger.LogInformation("Purchase report loaded...");
+
+                    return View("DisplayReport", viewModel); 
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    TempData["Error"] = "Failed to generate purchase report";
+                    _logger.LogInformation("Error occured in purchase report post action");
+                    _logger.LogError($"Error: {ex}");
+                    return View(model);
                 }
             }
+            TempData["Error"] = "Failed to load purchase report";
+            _logger.LogInformation("Error occured in purchase report post action model validation");
+
             return View(model);
         }
 
         public IActionResult DisplayReports(ReportViewModel model)
         {
-            return View(model); // Pass the ViewModel to the view
+            _logger.LogInformation("Display report ............");
+            TempData["Success"] = "Report generate success...!";
+            return View(model); 
         }
 
         public IActionResult SaleReport()
@@ -71,19 +83,24 @@ namespace Inventory.Presentation.Controllers
                 try
                 {
                     var reports = await _orderManagementService.GetOrdersByDateRangeAndType(model.SearchFrom.Date, model.SearchTo.Date, OrderType.Sale.ToString());
-                    viewModel.Reports = reports; // Assign reports to ViewModel
+                    viewModel.Reports = reports; 
                     viewModel.ReportType = OrderType.Sale.ToString();
-                    return View("DisplayReport", viewModel); // Return to the same action or different one with ViewModel
+
+                    _logger.LogInformation("Sale report loaded...");
+
+                    return View("DisplayReport", viewModel); 
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    TempData["Error"] = "Failed to generate sale report";
+                    _logger.LogInformation("Error occured in purchase report post action");
+                    _logger.LogError($"Error: {ex}");
+                    return View(model);
                 }
             }
+            TempData["Error"] = "Failed to load sale report";
+            _logger.LogInformation("Error occured in sale report post action model validation");
             return View(model);
-        }
-
-
-        
+        }       
     }
 }

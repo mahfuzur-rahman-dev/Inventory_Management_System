@@ -274,7 +274,6 @@ namespace Inventory.Presentation.Controllers
 
             }
 
-            return View(model);
         }
 
 

@@ -30,7 +30,7 @@ To access the system, use the following credentials:
 - **Password:** Admin123@
 
 
-## Technologies Used
+## Technologies & tools Used
 
 - ASP.NET Core
 - Entity Framework Core
@@ -39,6 +39,11 @@ To access the system, use the following credentials:
 - Bootstrap
 - ajax
 - jQuery
+- data table
+- sweet alert
+
+## Note
+- In doc folder database diagram provided
 
 ## Installation
 

@@ -34,17 +34,20 @@ namespace Inventory.Presentation.Controllers
             try
             {
                 var totalCategoriesCount = await _categoryManagementService.GetAllCategoryCount();
-                var totalProductStockCount = await _productManagementService.GetAllStockProductCount();
+                var totalProductCount = await _productManagementService.GetAllStockProductCount();
                 var totalPurchaseOrderCount = await _orderManagementService.GetAllPurchaseOrderCount();
                 var totalSaleOrderCount = await _orderManagementService.GetAllSaleOrderCount();
 
                 var totalPurchaseOrderToday = await _orderManagementService.GetAllPurchaseOrderCount(x => x.CreatedDate == DateTime.Today);
                 var totalSaleOrderToday = await _orderManagementService.GetAllSaleOrderCount(x => x.CreatedDate == DateTime.Today);
 
+                var productStocks = await _productManagementService.ProductStockCount();
+
                 model.TotalCategories = totalCategoriesCount;
-                model.TotalProducts = totalProductStockCount;
+                model.TotalProducts = totalProductCount;
                 model.TotalPurchaseOrders = totalPurchaseOrderCount;
                 model.TotalSaleOrders = totalSaleOrderCount;
+                model.TotalProductStoks = productStocks;
 
                 model.TodayPurchaseOrders = totalPurchaseOrderToday;
                 model.TodaySaleOrders = totalSaleOrderToday;

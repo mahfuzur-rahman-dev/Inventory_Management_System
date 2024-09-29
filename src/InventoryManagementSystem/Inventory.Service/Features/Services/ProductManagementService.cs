@@ -84,5 +84,15 @@ namespace Inventory.Service.Features.Services
             var prducts = await _unitOfWork.Product.GetAllAsync(x=>x.QuantityInStock >0);
             return prducts.Count;
         }
+
+        public async Task<int> ProductStockCount()
+        {
+            var productObjs = await _unitOfWork.Product.GetAllAsync();
+            //var products = productObjs as IQueryable<Order>;
+
+            int totalQuantity = productObjs.Sum(p => p.QuantityInStock);
+            return totalQuantity;
+
+        }
     }
 }

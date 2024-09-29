@@ -26,6 +26,35 @@ namespace Inventory.DataAccess.Context
                 .HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId);
+
+            // Admin  user seed 
+
+            var adminEmail = "admin@admin.com";
+            var adminPassword = "Admin123@";
+            var adminUserId = Guid.NewGuid();
+
+            var hasher = new PasswordHasher<ApplicationIdentityUser>();
+            var adminUser = new ApplicationIdentityUser
+            {
+                Id = adminUserId,
+                UserName = adminEmail,
+                NormalizedUserName = adminEmail.ToUpper(),
+                Email = adminEmail,
+                NormalizedEmail = adminEmail.ToUpper(),
+                EmailConfirmed = true,
+                SecurityStamp = Guid.NewGuid().ToString()
+            };
+            adminUser.PasswordHash = hasher.HashPassword(adminUser, adminPassword); 
+
+            modelBuilder.Entity<ApplicationIdentityUser>().HasData(adminUser);
+
+            modelBuilder.Entity<User>().HasData(new User
+            {
+                Id = adminUserId, 
+                Name = "Admin User",
+                Email = adminEmail
+            });
+
         }
 
         public DbSet<User> User {  get; set; }

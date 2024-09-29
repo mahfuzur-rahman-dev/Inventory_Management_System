@@ -11,7 +11,7 @@
         </div>
 
         <div class="col text-end pt-1">
-            <a asp-controller="Order" asp-action="Create" class="btn btn-outline-primary"><i class="bi bi-plus-circle"></i> Create purchase order</a>
+            <a asp-controller="Order" asp-action="CreatePurchaseOrder" class="btn btn-outline-primary"><i class="bi bi-plus-circle"></i> Create purchase order</a>
         </div>
     </div>
 
@@ -42,8 +42,8 @@
                         <td class="text-center">@data.TotalQuantity</td>
                         <td class="text-center">@data.TotalAmount</td>
                         <td class="text-center">
-                            <a asp-controller="Order" asp-action="Update" asp-route-id="@data.Id" class="btn btn-info w-25"><i class="bi bi-pencil-square"></i></a>
-                            <a asp-controller="Order" asp-action="Delete" asp-route-id="@data.Id" class="btn btn-danger w-25"><i class="bi bi-trash"></i> </a>
+                            <a asp-controller="Order" asp-action="UpdatePurchaseOrder" asp-route-id="@data.Id" class="btn btn-info w-25"><i class="bi bi-pencil-square"></i></a>
+                            <a asp-controller="Order" asp-action="DeleteOrder" asp-route-id="@data.Id" class="btn btn-danger w-25"><i class="bi bi-trash"></i> </a>
                         </td>
                     </tr>
 

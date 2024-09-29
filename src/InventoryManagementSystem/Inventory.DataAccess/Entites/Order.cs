@@ -21,7 +21,6 @@ namespace Inventory.DataAccess.Entites
         public DateTime? UpdatedDate { get; set; }
         public Product Product { get; set; }
 
-        //public ICollection<OrderDetail> OrderDetails { get; set; }
     }
 
 }

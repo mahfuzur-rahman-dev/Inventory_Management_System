@@ -17,6 +17,7 @@ namespace Inventory.Service.Features.Services.IServices
         Task RemoveOrderAsync(Order category);
         Task<IEnumerable<Order>> GetOrderByUserIdAsync(Guid userId);
         Task<IEnumerable<Product>> GetAllProductNameAsync();
+        Task<Product> GetProductAsync(Guid productId);
         Task<IEnumerable<Order>> GetAllSaleOrder(Expression<Func<Order, bool>> filter = null);
         Task<IEnumerable<Order>> GetAllPurchaseOrder(Expression<Func<Order, bool>> filter = null);
         Task<IEnumerable<Order>> GetOrdersByDateRangeAndType(DateTime searchFrom, DateTime searchTo, string orderType);

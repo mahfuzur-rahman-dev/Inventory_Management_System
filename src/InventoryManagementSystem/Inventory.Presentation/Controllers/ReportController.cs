@@ -47,6 +47,29 @@ namespace Inventory.Presentation.Controllers
             return View(model);
         }
 
+        public async Task<JsonResult> PurchaseReport2(DateTime fromDate, DateTime toDate)
+        {
+
+            //var viewModel = new ReportViewModel { CreateReportModel = model };
+
+            //if (ModelState.IsValid)
+            //{
+            //    try
+            //    {
+            //        var reports = await _orderManagementService.GetOrdersByDateRangeAndType(model.SearchFrom.Date, model.SearchTo.Date, OrderType.Purchase.ToString());
+            //        viewModel.Reports = reports; // Assign reports to ViewModel
+            //        viewModel.ReportType = OrderType.Purchase.ToString();
+            //        return View("DisplayReport", viewModel); // Return to the same action or different one with ViewModel
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine(ex.Message);
+            //    }
+            //}
+            //return View(model);
+
+            return null;
+        }
 
         public IActionResult DisplayReports(ReportViewModel model)
         {

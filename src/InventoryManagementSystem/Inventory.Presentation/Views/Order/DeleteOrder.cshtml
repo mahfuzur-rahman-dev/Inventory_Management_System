@@ -1,19 +1,22 @@
-﻿@model CreateOrderModel
+﻿@model UpdateOrderModel
 
 @{
-    var products = ViewBag.Products;
-    var orderTypes = ViewBag.OrderTypes;
+
     ViewData["Title"] = "Create";
+
+    var backAction = $"{Model.OrderType}Orders";
 }
 <div class="container  border border-2 border-dark">
 
-    <form asp-action="CreateOrder" asp-controller="Order" method="post" asp-antiforgery="true">
+    <form asp-action="DeleteOrder" asp-controller="Order" method="post" asp-antiforgery="true">
         <br />
 
         <div class="container p-3">
-            <h1>Create a order</h1>
+            <h1>Delete a @Model.OrderType order</h1>
             <hr />
         </div>
+
+        <input asp-for="Id" hidden />
 
         <div class="row p-4 border ">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -21,32 +24,34 @@
             <!-- Order Type Dropdown -->
             <div class="form-group">
                 <label asp-for="OrderType" class="control-label">Order Type</label>
-                <select asp-for="OrderType" asp-items="orderTypes" class="form-select">
-                    <option selected>---- Select order type -----</option>
+                <select asp-for="OrderType"  class="form-select" disabled>
+                    <option>@Model.OrderType</option>
                 </select>
+                <input asp-for="OrderType" value="@Model.OrderType" hidden />
                 <span asp-validation-for="OrderType" class="text-danger"></span>
             </div>
 
             <!-- Product Dropdown -->
             <div class="form-group">
                 <label asp-for="ProductId" class="control-label"></label>
-                <select asp-for="ProductId" asp-items="products" class="form-select">
-                    <option selected>---- Select category -----</option>
+                <select asp-for="ProductId"  class="form-select" disabled>
+                    <option>@Model.Product.Name</option>
                 </select>
+                <input asp-for="ProductId" hidden />
                 <span asp-validation-for="ProductId" class="text-danger"></span>
             </div>
 
             <!-- Sale Quantity Input -->
             <div class="form-group">
-                <label asp-for="SaleQuantity" class="control-label"></label>
-                <input asp-for="SaleQuantity" id="saleQuantity" placeholder="Enter quantity" class="form-control" />
-                <span asp-validation-for="SaleQuantity" class="text-danger"></span>
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" id="saleQuantity" placeholder="Enter quantity" class="form-control" disabled />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
 
             <!-- Unit Price Input -->
             <div class="form-group">
                 <label asp-for="UnitPrice" class="control-label"></label>
-                <input asp-for="UnitPrice" id="unitPrice" placeholder="Enter unit price" class="form-control" />
+                <input asp-for="UnitPrice" id="unitPrice" placeholder="Enter unit price" class="form-control" disabled  />
                 <span asp-validation-for="UnitPrice" class="text-danger"></span>
             </div>
 
@@ -59,29 +64,12 @@
 
             <!-- Submit Button -->
             <div class="form-group d-flex justify-content-left mt-3">
-                <button type="submit" class="btn btn-primary w-25">Create</button>
-                <a asp-action="Index" asp-controller="Order" class="mx-2">Back to list</a>
+                <button type="submit" class="btn btn-danger w-25">Delete</button>
+                <a asp-action="@backAction" asp-controller="Order" class="mx-2">Back to list</a>
             </div>
         </div>
     </form>
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        $(document).ready(function () {
-            function calculateTotal() {
-                var quantity = parseFloat($('#saleQuantity').val());
-                var unitPrice = parseFloat($('#unitPrice').val());
-                var total = 0;
-
-                if (!isNaN(quantity) && !isNaN(unitPrice)) {
-                    total = quantity * unitPrice;
-                }
-
-                $('#totalAmount').val(total.toFixed(2)); // Display total with 2 decimal places
-            }
-
-            $('#saleQuantity, #unitPrice').on('input', calculateTotal);
-        });
-    </script>
 }

@@ -24,7 +24,7 @@
                 <div class="col-md-4 col-12">
                     <div class="form-group">
                         <label class="control-label">From</label>
-                        <input asp-for="SearchFrom" id="searchFrom"  placeholder="Select a start date" class="form-control" required />
+                        <input asp-for="SearchFrom" type="date" id="searchFrom"  placeholder="Select a start date" class="form-control" required />
                         <span asp-validation-for="SearchFrom" class="text-danger"></span>
 
                     </div>
@@ -34,7 +34,7 @@
                 <div class="col-md-4 col-12">
                     <div class="form-group">
                         <label asp-for="SearchTo" class="control-label">To</label>
-                        <input asp-for="SearchTo" id="searchTo"  placeholder="Select an end date" class="form-control" required />
+                        <input asp-for="SearchTo" type="date" id="searchTo"  placeholder="Select an end date" class="form-control" required />
                         <span asp-validation-for="SearchTo" class="text-danger"></span>
 
                     </div>
@@ -71,7 +71,10 @@
                             });
                         }
                     });
-                });
+             }
+        );
+
+
     </script>
 }
 

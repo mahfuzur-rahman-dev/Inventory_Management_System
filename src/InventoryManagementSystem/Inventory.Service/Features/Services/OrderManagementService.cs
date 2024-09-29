@@ -17,7 +17,7 @@ namespace Inventory.Service.Features.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProductManagementService _productManagementService;
-        public OrderManagementService(IUnitOfWork unitOfWork,  IProductManagementService productManagementService)
+        public OrderManagementService(IUnitOfWork unitOfWork, IProductManagementService productManagementService)
         {
             _unitOfWork = unitOfWork;
             _productManagementService = productManagementService;
@@ -26,7 +26,7 @@ namespace Inventory.Service.Features.Services
 
         public async Task<IEnumerable<Order>> GetAllOrder()
         {
-            return await _unitOfWork.Order.GetAllAsync(includeProperties:"Product");
+            return await _unitOfWork.Order.GetAllAsync(includeProperties: "Product");
         }
 
 
@@ -35,7 +35,7 @@ namespace Inventory.Service.Features.Services
             return await _unitOfWork.Order.GetAllAsync(x => x.OrderType == OrderType.Sale.ToString(), includeProperties: "Product");
 
         }
-        
+
         public async Task<IEnumerable<Order>> GetAllPurchaseOrder(Expression<Func<Order, bool>> filter = null)
         {
             return await _unitOfWork.Order.GetAllAsync(x => x.OrderType == OrderType.Purchase.ToString(), includeProperties: "Product");
@@ -55,70 +55,82 @@ namespace Inventory.Service.Features.Services
 
         public async Task CreateOrderAsync(Guid userId, Guid productId, int totoalQuantity, decimal unitPrice, decimal totalAmount, string orderType)
         {
-            
-            try
+
+            var product = await _productManagementService.GetProductByIdAsync(productId);
+            if (product == null)
+                throw new Exception("Product not found");
+
+
+
+            if (orderType == OrderType.Purchase.ToString())
             {
-                var product = await _productManagementService.GetProductByIdAsync(productId);
-                if (product == null)
-                    throw new Exception("Product not found");
+                product.QuantityInStock += totoalQuantity;
 
-               
-
-                //if (orderType == OrderType.Purchase.ToString())
-                //{
-                //    product.QuantityInStock += totoalQuantity;
-
-                //    if(product.MinimumSellingPrice < unitPrice)
-                //        product.MinimumSellingPrice = unitPrice;
-
-                //    await _unitOfWork.Product.UpdateAsync(product);
-
-                //}
-
-                //if (orderType == OrderType.Sale.ToString())
-                //{
-                //    if(product.QuantityInStock > totoalQuantity)
-                //        throw new Exception("Not enough product.");
-
-                //    if (product.MinimumSellingPrice <= unitPrice)
-                //        throw new Exception("Unit price must be equal or more than minimum price.");
-
-                //    product.QuantityInStock -= totoalQuantity;
-
-                //    await _unitOfWork.Product.UpdateAsync(product);
-                //}
-
-                var order = new Order
+                if (product.Price < unitPrice)
                 {
-                   ProductId = productId,
-                   TotalQuantity = totoalQuantity,
-                   TotalAmount = totalAmount,
-                   UnitPrice = unitPrice,
-                   OrderType = orderType,
-                   CreatedDate = DateTime.Now,
-                   Product = product
-                };
+                    product.Price = unitPrice;
+                }
 
-                await _unitOfWork.Order.CreateAsync(order);
-
-                
+                await _unitOfWork.Product.UpdateAsync(product);
             }
-            catch (Exception ex)
+
+
+            if (orderType == OrderType.Sale.ToString())
             {
-                Console.WriteLine(ex.Message);
+                if (product.QuantityInStock < totoalQuantity)
+                    throw new Exception("Not enough product.");
+
+                product.QuantityInStock -= totoalQuantity;
+
+                await _unitOfWork.Product.UpdateAsync(product);
             }
-            
+
+            var order = new Order
+            {
+                ProductId = productId,
+                TotalQuantity = totoalQuantity,
+                TotalAmount = totalAmount,
+                UnitPrice = unitPrice,
+                OrderType = orderType,
+                CreatedDate = DateTime.Now,
+                Product = product
+            };
+
+            await _unitOfWork.Order.CreateAsync(order);
 
         }
 
 
         public async Task<Order> GetOrderByIdAsync(Guid id)
         {
-            return await _unitOfWork.Order.GetAsync(x=>x.Id == id);
+            return await _unitOfWork.Order.GetAsync(x => x.Id == id, includeProperties: "Product");
         }
 
         public async Task RemoveOrderAsync(Order order)
         {
+            var product = await _productManagementService.GetProductByIdAsync(order.ProductId);
+
+            if (order.OrderType == OrderType.Sale.ToString())
+            {
+                if (product != null)
+                    product.QuantityInStock += order.TotalQuantity;
+
+            }
+            else
+            {
+                if(product != null && product.QuantityInStock < order.TotalQuantity)
+                {
+                    throw new Exception("Cannot edit this purchase order due to product shortage");
+                }
+                else
+                {
+                    product.QuantityInStock -= order.TotalQuantity;
+                }
+            }
+            
+
+            await _unitOfWork.Product.UpdateAsync(product);
+
             await _unitOfWork.Order.RemoveAsync(order);
         }
 
@@ -128,7 +140,7 @@ namespace Inventory.Service.Features.Services
             return await _unitOfWork.Order.GetAllAsync(x => x.CustomerId == userId, includeProperties: "User,Product");
         }
 
-        
+
 
         public async Task<IEnumerable<Product>> GetAllProductNameAsync()
         {
@@ -137,39 +149,117 @@ namespace Inventory.Service.Features.Services
 
         public async Task UpdateOrderAsync(Guid orderId, Guid productId, int totoalQuantity, decimal unitPrice, decimal totalAmount, string orderType)
         {
-            try
+
+            var order = await GetOrderByIdAsync(orderId);
+            if (order == null)
+                throw new Exception("Order not found");
+
+            var product = await _productManagementService.GetProductByIdAsync(productId);
+
+
+            //purchase
+
+            if (orderType == OrderType.Purchase.ToString())
             {
-                var product = await _productManagementService.GetProductByIdAsync(productId);
-                if (product == null)
-                    throw new Exception("Product not found");
+                if (order.TotalQuantity < totoalQuantity)
+                {
+                    var diff = totoalQuantity - order.TotalQuantity;
 
-                var order = await GetOrderByIdAsync(orderId);
-                if (order == null)
-                    throw new Exception("Order not found");
+                    order.TotalQuantity += diff;
 
-                order.ProductId = productId;
-                order.TotalQuantity = totoalQuantity;
-                order.UnitPrice = unitPrice;
-                order.TotalAmount = totalAmount;
-                order.OrderType = orderType;
+                    if (order.UnitPrice < unitPrice)
+                    {
+                        order.UnitPrice = unitPrice;
+                        product.Price = unitPrice;
+                    }
 
-                await _unitOfWork.Order.UpdateAsync(order);
+                    product.QuantityInStock += diff;
 
+                    await _unitOfWork.Product.UpdateAsync(product);
+
+                    order.TotalAmount = totalAmount;
+                    await _unitOfWork.Order.UpdateAsync(order);
+
+                }
+                else if ((order.TotalQuantity - totoalQuantity) <= product.QuantityInStock)
+                {
+                    var diff = order.TotalQuantity - totoalQuantity;
+
+                    order.TotalQuantity -= diff;
+
+                    if (order.UnitPrice < unitPrice)
+                    {
+                        order.UnitPrice = unitPrice;
+                        product.Price = unitPrice;
+                    }
+
+                    product.QuantityInStock -= diff;
+
+                    await _unitOfWork.Product.UpdateAsync(product);
+
+                    order.TotalAmount = totalAmount;
+                    await _unitOfWork.Order.UpdateAsync(order);
+                }
+                else
+                {
+                    throw new Exception("Cannot edit this purchase order due to product shortage");
+                }
 
             }
-            catch (Exception ex)
+
+
+            //sale 
+
+            if (orderType == OrderType.Sale.ToString())
             {
-                Console.WriteLine(ex.Message);
+                if (order.TotalQuantity > totoalQuantity)
+                {
+                    var diff = order.TotalQuantity - totoalQuantity;
+
+                    order.TotalQuantity -= diff;
+                    product.QuantityInStock += diff;
+                    order.UpdatedDate = DateTime.Now;
+
+                    await _unitOfWork.Product.UpdateAsync(product);
+
+                    order.TotalAmount = totalAmount;
+                    await _unitOfWork.Order.UpdateAsync(order);
+                }
+                else if (order.TotalQuantity <= totoalQuantity)
+                {
+                    if ((totoalQuantity - order.TotalQuantity) <= product.QuantityInStock)
+                    {
+                        var diff = totoalQuantity - order.TotalQuantity;
+
+                        order.TotalQuantity += diff;
+                        product.QuantityInStock -= diff;
+
+                        await _unitOfWork.Product.UpdateAsync(product);
+
+                        order.TotalAmount = totalAmount;
+                        order.UpdatedDate = DateTime.Now;
+                        await _unitOfWork.Order.UpdateAsync(order);
+                    }
+                    else
+                    {
+                        throw new Exception("Cannot edit this sale order due to product shortage");
+
+                    }
+                }
+
             }
+
+
+
         }
 
         public async Task<int> GetAllPurchaseOrderCount(Expression<Func<Order, bool>> filter = null)
         {
             var orders = await GetAllPurchaseOrder();
 
-            
 
-            if(filter != null)
+
+            if (filter != null)
             {
                 IQueryable<Order> queryableOrders = orders.AsQueryable();
                 queryableOrders = queryableOrders.Where(filter);
@@ -190,6 +280,11 @@ namespace Inventory.Service.Features.Services
                 return queryableOrders.Count();
             }
             return orders.Count();
+        }
+
+        public async Task<Product> GetProductAsync(Guid productId)
+        {
+            return await _productManagementService.GetProductByIdAsync(productId);
         }
     }
 }

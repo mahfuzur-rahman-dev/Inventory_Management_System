@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Inventory.Presentation.Models
 {
-    public class UpdateOrderModel
+    public class UpdateSaleOrderModel
     {
         [Required]
         public Guid Id { get; set; }

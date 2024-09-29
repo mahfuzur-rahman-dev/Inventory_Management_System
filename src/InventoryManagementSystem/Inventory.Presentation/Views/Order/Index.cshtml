@@ -31,8 +31,16 @@
 
             @{
                 var serialNo = 1;
+
                 foreach (var data in Model)
                 {
+                    var updateAction = "UpdatePurchaseOrder";
+
+                    @if(data.OrderType == "Sale")
+                    {
+                        updateAction = "UpdateSaleOrder";
+                    }
+
                     <tr>
                         <td class="text-center">@serialNo</td>
                         <td class="text-center">@data.CreatedDate.ToString("dd MMMM yyyy")</td>
@@ -41,8 +49,8 @@
                         <td class="text-center">@data.TotalQuantity</td>
                         <td class="text-center">@data.TotalAmount</td>
                         <td class="text-center">
-                            <a asp-controller="Order" asp-action="Update" asp-route-id="@data.Id" class="btn btn-info w-25"><i class="bi bi-pencil-square"></i></a>
-                            <a asp-controller="Order" asp-action="Delete" asp-route-id="@data.Id" class="btn btn-danger w-25"><i class="bi bi-trash"></i> </a>
+                            <a asp-controller="Order" asp-action="@updateAction" asp-route-id="@data.Id" class="btn btn-info w-25"><i class="bi bi-pencil-square"></i></a>
+                            <a asp-controller="Order" asp-action="DeleteOrder" asp-route-id="@data.Id" class="btn btn-danger w-25"><i class="bi bi-trash"></i> </a>
                         </td>
                     </tr>
 

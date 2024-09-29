@@ -15,6 +15,8 @@ namespace Inventory.DataAccess.Entites
         public decimal Price { get; set; } = 0.00m;
         public int QuantityInStock { get; set; } = 0;
         public Guid CategoryId { get; set; }
+        public Guid CreatedBy { get; set; }
+        public User User { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } 
 

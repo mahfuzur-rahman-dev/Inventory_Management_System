@@ -7,6 +7,7 @@ using Inventory.Service.Features.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace Inventory.Presentation.Controllers
 {
@@ -88,7 +89,10 @@ namespace Inventory.Presentation.Controllers
                 {
                     if (model.Name == null)
                         return View(model);
-                    await _productManagementService.CreateProductAsync(model.Name, model.Description, model.CategoryId);
+
+                    var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                    await _productManagementService.CreateProductAsync(model.Name, model.Description, model.CategoryId,userId);
 
                     TempData["Success"] = "Product created successfully";
                     _logger.LogInformation("New product created....");

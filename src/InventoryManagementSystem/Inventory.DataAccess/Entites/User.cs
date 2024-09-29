@@ -11,6 +11,9 @@ namespace Inventory.DataAccess.Entites
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public List<Product>? Products { get; set; }
+        public List<Category>? Categories { get; set; }
+        public List<Order>? Orders { get; set; }
     }
 }
 

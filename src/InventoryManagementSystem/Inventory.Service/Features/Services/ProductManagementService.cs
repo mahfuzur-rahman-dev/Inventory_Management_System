@@ -25,7 +25,7 @@ namespace Inventory.Service.Features.Services
         }
 
 
-        public async Task CreateProductAsync(string name, string description, Guid categoryId)
+        public async Task CreateProductAsync(string name, string description, Guid categoryId, Guid userId)
         {
             if (await CheckDuplicateName(name))
                 throw new InvalidOperationException("A product with this name already exists.");
@@ -35,6 +35,7 @@ namespace Inventory.Service.Features.Services
                 Name = name,
                 Description = description,
                 CategoryId = categoryId,
+                CreatedBy = userId
             };
             await _unitOfWork.Product.CreateAsync(product);
         }

@@ -137,7 +137,7 @@ namespace Inventory.Presentation.Controllers
                 model.Id = category.Id;
 
                 _logger.LogInformation("Category delete view page loaded...");
-                return RedirectToAction("Index");
+                return View(model);
 
             }
             TempData["Error"] = "Failed to update category";

@@ -25,7 +25,7 @@ namespace Inventory.Service.Features.Services
         }
 
 
-        public async Task CreateProductAsync(string name, string description, Guid categoryId, Guid userId)
+        public async Task CreateProductAsync(string name, string description, decimal unitPrice, int quantity, Guid categoryId, Guid userId)
         {
             if (await CheckDuplicateName(name))
                 throw new InvalidOperationException("A product with this name already exists.");
@@ -35,7 +35,9 @@ namespace Inventory.Service.Features.Services
                 Name = name,
                 Description = description,
                 CategoryId = categoryId,
-                CreatedBy = userId
+                Price = unitPrice,
+                QuantityInStock = quantity,
+                CreatedBy = userId,
             };
             await _unitOfWork.Product.CreateAsync(product);
         }
@@ -65,7 +67,7 @@ namespace Inventory.Service.Features.Services
             await _unitOfWork.Product.RemoveAsync(product);
         }
 
-        public async Task UpdateProductAsync(Guid id,string name, string description, Guid categoryId)
+        public async Task UpdateProductAsync(Guid id,string name, string description, decimal unitPrice, int quantity, Guid categoryId)
         {
 
             var product = await GetProductByIdAsync(id);
@@ -75,6 +77,8 @@ namespace Inventory.Service.Features.Services
             product.Description = description;
             product.Name = name;
             product.CategoryId = categoryId;
+            product.QuantityInStock = quantity;
+            product.Price = unitPrice;
             product.UpdatedAt = DateTime.Now;
 
             await _unitOfWork.Product.UpdateAsync(product);

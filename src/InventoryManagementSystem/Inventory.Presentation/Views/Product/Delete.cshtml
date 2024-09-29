@@ -8,14 +8,16 @@
 
 <div class="container p-4 pt-0 mt-1 border border-2 border-dark">
 
+    <br />
+
+    <div class=" p-3">
+        <h1>Delete product</h1>
+        <hr />
+    </div>
+
 
     <form asp-action="Delete" asp-controller="Product" method="post" asp-antiforgery="true">
-        <br />
-
-        <div class="container p-3">
-            <h1>Delete product</h1>
-            <hr />
-        </div>
+   
 
         <div class="row p-4 border ">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -24,12 +26,15 @@
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" placeholder="Enter product name" class="form-control" required disabled />
+                <input asp-for="Name" placeholder="Enter product name" class="form-control" required hidden />
+
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
             <div class="form-group mt-2">
                 <label asp-for="Description" class="control-label"></label>
                 <textarea asp-for="Description" rows="4" placeholder=" Enter product description" class="form-control" disabled></textarea>
+                <textarea asp-for="Description" rows="4" placeholder=" Enter product description" class="form-control" hidden></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
@@ -38,9 +43,23 @@
                 <select asp-for="CategoryId" class="form-select" disabled>
                     <option selected>@selectedCategoryName</option>
                 </select>
+                <input asp-for="CategoryId" hidden />
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
 
+            <div class="form-group">
+                <label asp-for="UnitPrice" class="control-label">Price</label>
+                <input asp-for="UnitPrice" type="number" placeholder="Enter product price" class="form-control" disabled />
+                <input asp-for="UnitPrice" type="number" placeholder="Enter product price" class="form-control" hidden />
+                <span asp-validation-for="UnitPrice" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label"></label>
+                <input asp-for="Quantity" type="number" placeholder="Enter product quantity" class="form-control" disabled />
+                <input asp-for="Quantity" type="number" placeholder="Enter product quantity" class="form-control" hidden />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
             <div class="form-group d-flex justify-content-left mt-3">
                 <button type="submit" class="btn btn-danger w-25">Delete</button>
                 <a asp-action="Index" asp-controller="Product" class="mx-2">Back to list</a>

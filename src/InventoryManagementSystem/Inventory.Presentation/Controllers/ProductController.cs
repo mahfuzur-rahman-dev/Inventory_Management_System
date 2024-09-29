@@ -92,7 +92,7 @@ namespace Inventory.Presentation.Controllers
 
                     var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                    await _productManagementService.CreateProductAsync(model.Name, model.Description, model.CategoryId,userId);
+                    await _productManagementService.CreateProductAsync(model.Name, model.Description,model.UnitPrice,model.Quantity, model.CategoryId,userId);
 
                     TempData["Success"] = "Product created successfully";
                     _logger.LogInformation("New product created....");
@@ -128,6 +128,8 @@ namespace Inventory.Presentation.Controllers
                 model.Description = product.Description;
                 model.Name = product.Name;
                 model.CategoryId = product.CategoryId;
+                model.UnitPrice = product.Price;
+                model.Quantity = product.QuantityInStock;
 
                 var categories = await _productManagementService.GetAllCategoryNameAsync();
 
@@ -145,7 +147,7 @@ namespace Inventory.Presentation.Controllers
 
                 _logger.LogInformation("Product update view page loaded...");
 
-                return RedirectToAction("Index");
+                return View(model);
             }
             catch (Exception ex)
             {
@@ -167,7 +169,7 @@ namespace Inventory.Presentation.Controllers
                 {
                     if (model.Name == null)
                         return View(model);
-                    await _productManagementService.UpdateProductAsync(model.Id, model.Name, model.Description, model.CategoryId);
+                    await _productManagementService.UpdateProductAsync(model.Id, model.Name, model.Description,model.UnitPrice,model.Quantity, model.CategoryId);
 
                     TempData["success"] = "Product updated successfully";
                     _logger.LogInformation("Product update successfully....");
@@ -201,6 +203,8 @@ namespace Inventory.Presentation.Controllers
                 model.Description = product.Description;
                 model.Name = product.Name;
                 model.CategoryId = product.Id;
+                model.UnitPrice = product.Price;
+                model.Quantity = product.QuantityInStock;
 
                 ViewBag.SelectedCategoryName = product.Category.Name;
 

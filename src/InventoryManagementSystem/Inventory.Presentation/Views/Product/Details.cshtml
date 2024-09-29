@@ -40,11 +40,11 @@
         <!-- Order Quantity -->
         <div class="row pl-2 mt-4">
             <div class="col-1 text-primary"><h4>Count</h4></div>
-            <div class="col-11"><input id="orderCount" class="form-control" /></div>
+            @* <div class="col-11"><input id="orderCount" class="form-control" /></div> *@
         </div>
 
         <!-- Hidden field to store userId -->
-        <input type="hidden" id="userId" value="@userId" />
+        <input type="hidden" id="userId" value="@userId" disabled />
 
     </div>
 
@@ -53,7 +53,7 @@
             <a asp-controller="Product" asp-action="AllProducts" class="btn btn-success form-control py-2">Back to List</a>
         </div>
         <div class="col-12 col-md-6">
-            <button onclick="return placeOrder('@Model.Id')" type="button" class="btn btn-primary form-control py-2">Place order</button>
+            <button onclick="return placeOrder('@Model.Id')" type="button" class="btn btn-primary form-control py-2" disabled>Place order</button>
         </div>
     </div>
 </div>

@@ -13,6 +13,10 @@ namespace Inventory.Presentation.Models
         public string Description { get; set; }
         [Required]
         public Guid CategoryId { get; set; }
+        [Required]
+        public decimal UnitPrice { get; set; }
+        [Required]
+        public int Quantity { get; set; }
 
     }
 }
